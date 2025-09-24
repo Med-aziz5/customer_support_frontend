@@ -1,0 +1,45 @@
+<div class="create-ticket-container">
+  <h2>Create a New Ticket</h2>
+
+  <form [formGroup]="ticketForm" (ngSubmit)="submitTicket()">
+    <label>
+      Title:
+      <input formControlName="title" />
+    </label>
+    <div *ngIf="ticketForm.controls['title'].invalid && ticketForm.controls['title'].touched" class="error">
+      Title is required
+    </div>
+
+    <label>
+      Description:
+      <textarea formControlName="description"></textarea>
+    </label>
+
+    <label>
+      Category:
+      <select formControlName="category">
+        <option value="">Select Category</option>
+        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+      </select>
+    </label>
+    <div *ngIf="ticketForm.controls['category'].invalid && ticketForm.controls['category'].touched" class="error">
+      Category is required
+    </div>
+
+    <label>
+      Priority:
+      <select formControlName="priority">
+        <option value="">Select Priority</option>
+        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+      </select>
+    </label>
+    <div *ngIf="ticketForm.controls['priority'].invalid && ticketForm.controls['priority'].touched" class="error">
+      Priority is required
+    </div>
+
+    <button type="submit" [disabled]="loading">Submit</button>
+  </form>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+</div>

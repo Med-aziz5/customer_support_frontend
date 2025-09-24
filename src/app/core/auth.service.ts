@@ -21,7 +21,7 @@ export class AuthService {
       data: { accessToken: string; user: User };
     }>('/api/auth/login', payload).pipe(
       tap(res => {
-        localStorage.setItem('cs_token', res.data.accessToken);
+        localStorage.setItem('access_token', res.data.accessToken);
         this._user$.next(res.data.user);
       })
     );
@@ -33,7 +33,7 @@ export class AuthService {
       data: { accessToken: string; user: User };
     }>('/api/auth/register', payload).pipe(
       tap(res => {
-        localStorage.setItem('cs_token', res.data.accessToken);
+        localStorage.setItem('access_token', res.data.accessToken);
         this._user$.next(res.data.user);
       })
     );
@@ -46,12 +46,15 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('cs_token');
+    localStorage.removeItem('access_token');
     this._user$.next(null);
     return this.http.post('/api/auth/logout', {});
   }
 
   getToken() {
-    return localStorage.getItem('cs_token');
+    return localStorage.getItem('access_token');
+  }
+  getUser(): User | null {
+    return this._user$.getValue();
   }
 }

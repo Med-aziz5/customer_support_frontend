@@ -1,0 +1,53 @@
+<!-- CLIENT VIEW -->
+<div *ngIf="role === 'CLIENT'" class="client-tickets">
+  <div *ngFor="let ticket of tickets" class="ticket-card">
+    <h3>{{ ticket.title }}</h3>
+    <p>{{ ticket.description }}</p>
+    <p><strong>Category:</strong> {{ ticket.category }}</p>
+    <p><strong>Priority:</strong> {{ ticket.priority }}</p>
+    <p><strong>Status:</strong> {{ ticket.status }}</p>
+    <!-- Meeting request button placeholder for later -->
+    <!-- <button>Request Meeting</button> -->
+  </div>
+</div>
+
+<!-- AGENT / ADMIN VIEW -->
+<div *ngIf="role !== 'CLIENT'" class="agent-admin-tickets">
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Category</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>User ID</th>
+        <th>Assigned To</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ticket of tickets">
+        <td>{{ ticket.title }}</td>
+        <td>{{ ticket.description }}</td>
+        <td>{{ ticket.category }}</td>
+        <td>{{ ticket.priority }}</td>
+        <td>{{ ticket.status }}</td>
+        <td>{{ ticket.user_id }}</td>
+        <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
+        <td>
+          <!-- Assign to self button for agent/admin -->
+          <button *ngIf="role === 'AGENT' || role === 'ADMIN'" (click)="assignToSelf(ticket.id)">
+            Assign to Self
+          </button>
+
+          <!-- Assign to another agent (ADMIN only) -->
+          <div *ngIf="role === 'ADMIN'" class="assign-admin">
+            <input type="number" placeholder="Agent ID" [formControl]="assignForm.controls['agentId']"/>
+            <button (click)="assignToAgent(ticket.id)">Assign</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

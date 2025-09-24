@@ -8,6 +8,8 @@
     <p><strong>Status:</strong> {{ ticket.status }}</p>
     <!-- Meeting request button placeholder for later -->
     <!-- <button>Request Meeting</button> -->
+    <button (click)="editTicket(ticket.id)">Edit</button>
+
   </div>
 </div>
 
@@ -46,6 +48,12 @@
             <input type="number" placeholder="Agent ID" [formControl]="assignForm.controls['agentId']"/>
             <button (click)="assignToAgent(ticket.id)">Assign</button>
           </div>
+        </td>
+        <td>
+        <!-- Delete button for Admin -->
+         <button *ngIf="role === 'ADMIN'" (click)="deleteTicket(ticket.id)">
+             Delete
+        </button>
         </td>
       </tr>
     </tbody>

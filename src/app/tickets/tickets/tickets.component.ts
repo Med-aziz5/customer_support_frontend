@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
 import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
+import { Router } from '@angular/router';
 
 interface Ticket {
   id: number;
@@ -27,6 +28,8 @@ export class TicketsComponent implements OnInit {
   private auth = inject(AuthService);
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
+  private router = inject(Router);
+
 
   tickets: Ticket[] = [];
   loading = false;
@@ -69,5 +72,24 @@ export class TicketsComponent implements OnInit {
       error: (err) => console.error(err),
     });
   }
+  editTicket(ticketId: number) {
+  // navigate to edit ticket page
+  this.router.navigate(['/tickets/edit', ticketId]);
+}
+deleteTicket(ticketId: number) {
+  if (!confirm('Are you sure you want to delete this ticket?')) return;
+
+  this.http.delete(`/ticket/${ticketId}`)
+    .subscribe({
+      next: () => {
+        alert('Ticket deleted successfully!');
+        this.fetchTickets(); 
+      },
+      error: (err) => {
+        console.error(err);
+        alert(err.error?.message || 'Failed to delete ticket');
+      }
+    });
+}
 }
 

@@ -5,6 +5,17 @@ import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 
+interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  priority: string;
+  status: string;
+  user_id: number;
+  assigned_to?: number;
+}
+
 @Component({
   selector: 'app-create-ticket',
   standalone: true,
@@ -22,10 +33,10 @@ export class CreateTicketComponent {
   errorMessage = '';
 
   ticketForm = this.fb.group({
-    title: ['', [Validators.required]],
+    title: ['', Validators.required],
     description: [''],
-    category: ['', [Validators.required]],
-    priority: ['', [Validators.required]],
+    category: ['', Validators.required],
+    priority: ['', Validators.required],
   });
 
   categories = ['BUG', 'FEATURE_REQUEST', 'SUPPORT', 'BILLING'];
@@ -38,10 +49,17 @@ export class CreateTicketComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.http.post('/ticket', this.ticketForm.value)
+    // Cast the form value to a plain object
+    const payload = {
+      ...this.ticketForm.value,
+      category: this.ticketForm.value.category,
+      priority: this.ticketForm.value.priority,
+    };
+
+    this.http.post<{ data: Ticket }>('/api/v1/tickets', payload)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.successMessage = 'Ticket created successfully!';
           this.ticketForm.reset();
         },

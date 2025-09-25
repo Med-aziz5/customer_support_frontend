@@ -91,5 +91,23 @@ deleteTicket(ticketId: number) {
       }
     });
 }
+requestedMeetings = new Set<number>(); // store ticket IDs
+
+requestMeeting(ticketId: number) {
+  if (!confirm('Do you want to request a meeting for this ticket?')) return;
+
+  this.http.post(`/meeting/request/${ticketId}`, {})
+    .subscribe({
+      next: () => {
+        alert('Meeting request sent successfully!');
+        this.requestedMeetings.add(ticketId); // mark as requested
+      },
+      error: (err) => {
+        console.error(err);
+        alert(err.error?.message || 'Failed to request meeting');
+      }
+    });
+}
+
 }
 

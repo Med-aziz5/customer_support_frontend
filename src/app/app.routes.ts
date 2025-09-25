@@ -8,11 +8,13 @@ import { AuthGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'tickets', component: TicketsComponent,canActivate:[AuthGuard] },                 
-  { path: 'tickets/create', component: CreateTicketComponent },
-  { path: 'tickets/edit/:id', component: EditTicketComponent },
-  { path: '', redirectTo: 'tickets', pathMatch: 'full' },
+
+  { path: 'tickets', component: TicketsComponent, canActivate: [AuthGuard] },
+  { path: 'tickets/create', component: CreateTicketComponent, canActivate: [AuthGuard] },
+  { path: 'tickets/edit/:id', component: EditTicketComponent, canActivate: [AuthGuard] },
+
   { path: '**', redirectTo: 'login' }, // fallback
 ];

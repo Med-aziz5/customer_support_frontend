@@ -6,9 +6,14 @@
     <p><strong>Category:</strong> {{ ticket.category }}</p>
     <p><strong>Priority:</strong> {{ ticket.priority }}</p>
     <p><strong>Status:</strong> {{ ticket.status }}</p>
-    <!-- Meeting request button placeholder for later -->
-    <!-- <button>Request Meeting</button> -->
     <button (click)="editTicket(ticket.id)">Edit</button>
+     <!-- Request Meeting button -->
+    <button 
+    (click)="requestMeeting(ticket.id)" 
+    [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
+    {{ requestedMeetings.has(ticket.id) ? 'Meeting Requested' : 'Request Meeting' }}
+    </button>
+
 
   </div>
 </div>

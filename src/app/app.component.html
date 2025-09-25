@@ -1,0 +1,17 @@
+<header>
+  <nav>
+    <a routerLink="/">Home</a>
+    <span *ngIf="user$ | async as user">
+      Welcome, {{ user.email }} ({{ user.role }})
+      <button (click)="logout()">Logout</button>
+    </span>
+    <span *ngIf="!(user$ | async)">
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </span>
+  </nav>
+</header>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

@@ -1,13 +1,16 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
-export const JwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('access_Token');
+export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+  const auth = inject(AuthService);
+  const token = auth.getToken();
 
-  if (token) {
-    req = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
-  }
+  // Clone request and attach Authorization header if token exists
+  const authReq = token
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
 
-  return next(req);
+  return next(authReq);
 };

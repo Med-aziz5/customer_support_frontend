@@ -1,47 +1,71 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { finalize } from 'rxjs';
-import { AuthService } from '../core/auth.service';
-
-interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  role: string;
-}
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService, User } from '../core/auth.service';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
   private http = inject(HttpClient);
+  private fb = inject(FormBuilder);
   private auth = inject(AuthService);
 
   users: User[] = [];
   loading = false;
-  errorMessage = '';
+  role: 'CLIENT' | 'AGENT' | 'ADMIN' = 'CLIENT';
   message = '';
+  showCreateAgentForm = false;
+
+  createAgentForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+    first_name: ['', Validators.required],
+    last_name: ['', Validators.required],
+  });
 
   ngOnInit() {
+    const user = this.auth.getUser();
+    if (user && user.role) this.role = user.role as 'CLIENT' | 'AGENT' | 'ADMIN';
     this.fetchUsers();
   }
 
   fetchUsers() {
+    if (this.role !== 'ADMIN') return;
+
     this.loading = true;
     this.http.get<{ data: User[] }>('/api/v1/users')
-      .pipe(finalize(() => this.loading = false))
       .subscribe({
-        next: res => this.users = res.data,
-        error: err => {
-          console.error(err);
-          this.errorMessage = err.error?.message || 'Failed to fetch users';
-        }
+        next: (res) => { this.users = res.data; this.loading = false; },
+        error: (err) => { console.error(err); this.loading = false; }
       });
+  }
+
+  toggleCreateAgent() {
+    this.showCreateAgentForm = !this.showCreateAgentForm;
+  }
+
+  createAgent() {
+    if (this.createAgentForm.invalid) return;
+
+    const payload = this.createAgentForm.value;
+    this.http.post('/api/v1/auth/create-agent', payload).subscribe({
+      next: () => {
+        this.message = 'Agent created successfully!';
+        this.showCreateAgentForm = false;
+        this.createAgentForm.reset();
+        this.fetchUsers();
+        setTimeout(() => this.message = '', 3000);
+      },
+      error: (err) => {
+        console.error(err);
+        this.message = err.error?.message || 'Failed to create agent';
+      }
+    });
   }
 }

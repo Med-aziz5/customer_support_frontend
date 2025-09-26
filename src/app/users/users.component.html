@@ -1,13 +1,27 @@
-<div class="users-page">
+<div class="users-container">
   <h2>All Users</h2>
 
-  <div *ngIf="loading">Loading users...</div>
-  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <!-- Show success message -->
+  <div *ngIf="message" class="success-message">{{ message }}</div>
 
-  <table *ngIf="!loading && users.length">
+  <!-- Admin: Create Agent Button -->
+  <button *ngIf="role === 'ADMIN'" (click)="toggleCreateAgent()">
+    {{ showCreateAgentForm ? 'Cancel' : 'Create Agent' }}
+  </button>
+
+  <!-- Create Agent Form -->
+  <form *ngIf="showCreateAgentForm" [formGroup]="createAgentForm" (ngSubmit)="createAgent()">
+    <input type="text" formControlName="first_name" placeholder="First Name" required />
+    <input type="text" formControlName="last_name" placeholder="Last Name" required />
+    <input type="email" formControlName="email" placeholder="Email" required />
+    <input type="password" formControlName="password" placeholder="Password" required />
+    <button type="submit">Create</button>
+  </form>
+
+  <!-- Users Table -->
+  <table *ngIf="users.length > 0">
     <thead>
       <tr>
-        <th>ID</th>
         <th>Email</th>
         <th>First Name</th>
         <th>Last Name</th>
@@ -16,7 +30,6 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of users">
-        <td>{{ user.id }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.first_name }}</td>
         <td>{{ user.last_name }}</td>
@@ -25,5 +38,6 @@
     </tbody>
   </table>
 
-  <div *ngIf="!loading && !users.length">No users found.</div>
+  <div *ngIf="loading">Loading users...</div>
+  <div *ngIf="!loading && users.length === 0">No users found.</div>
 </div>

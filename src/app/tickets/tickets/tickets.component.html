@@ -24,6 +24,15 @@
 
 <!-- AGENT / ADMIN VIEW -->
 <div *ngIf="role !== 'CLIENT'" class="agent-admin-tickets">
+
+  <!-- Toggle checkbox -->
+  <div class="filter-bar">
+    <label>
+      <input type="checkbox" [(ngModel)]="showAssignedOnly" (change)="toggleAssignedTickets()" />
+      Show only my tickets
+    </label>
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -47,7 +56,7 @@
         <td>{{ ticket.user_id }}</td>
         <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
         <td>
-          <!-- Assign to self button for agent/admin -->
+          <!-- Assign to self -->
           <button *ngIf="role === 'AGENT' || role === 'ADMIN'" (click)="assignToSelf(ticket.id)">
             Assign to Self
           </button>
@@ -59,12 +68,13 @@
           </div>
         </td>
         <td>
-        <!-- Delete button for Admin -->
-         <button *ngIf="role === 'ADMIN'" (click)="deleteTicket(ticket.id)">
-             Delete
-        </button>
+          <!-- Delete button for Admin -->
+          <button *ngIf="role === 'ADMIN'" (click)="deleteTicket(ticket.id)">
+            Delete
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
+

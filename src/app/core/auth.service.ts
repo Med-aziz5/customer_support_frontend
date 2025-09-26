@@ -53,7 +53,7 @@ login(payload: { email: string; password: string }) {
   logout() {
    return this.http.post('/api/v1/auth/logout', {}).pipe(
      tap(() => {
-      localStorage.removeItem('access_token'); // remove AFTER logout succeeds
+      localStorage.removeItem('access_token'); 
       this._user$.next(null);
       })
     );

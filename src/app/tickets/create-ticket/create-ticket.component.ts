@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
 interface Ticket {
@@ -19,13 +20,14 @@ interface Ticket {
 @Component({
   selector: 'app-create-ticket',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './create-ticket.component.html',
   styleUrls: ['./create-ticket.component.css'],
 })
 export class CreateTicketComponent {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
+  private router = inject(Router);
   private auth = inject(AuthService);
 
   loading = false;
@@ -49,12 +51,7 @@ export class CreateTicketComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    // Cast the form value to a plain object
-    const payload = {
-      ...this.ticketForm.value,
-      category: this.ticketForm.value.category,
-      priority: this.ticketForm.value.priority,
-    };
+    const payload = { ...this.ticketForm.value };
 
     this.http.post<{ data: Ticket }>('/api/v1/tickets', payload)
       .pipe(finalize(() => (this.loading = false)))
@@ -62,6 +59,7 @@ export class CreateTicketComponent {
         next: (res) => {
           this.successMessage = 'Ticket created successfully!';
           this.ticketForm.reset();
+          setTimeout(() => this.router.navigate(['/tickets']), 1000);
         },
         error: (err) => {
           console.error(err);

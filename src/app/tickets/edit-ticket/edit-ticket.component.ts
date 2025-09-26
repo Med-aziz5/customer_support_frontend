@@ -5,6 +5,17 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
 
+interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  priority: string;
+  status: string;
+  assigned_to?: number;
+  user_id: number;
+}
+
 @Component({
   selector: 'app-edit-ticket',
   standalone: true,
@@ -34,13 +45,19 @@ export class EditTicketComponent implements OnInit {
   priorities = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
 
   ngOnInit() {
-    this.ticketId = Number(this.route.snapshot.paramMap.get('id'));
+    const param = this.route.snapshot.paramMap.get('id');
+    if (!param) {
+      this.errorMessage = 'Ticket ID not provided';
+      return;
+    }
+
+    this.ticketId = Number(param);
     this.loadTicket();
   }
 
   loadTicket() {
     this.loading = true;
-    this.http.get<any>(`/ticket/${this.ticketId}`)
+    this.http.get<Ticket>(`/api/v1/tickets/${this.ticketId}`)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (ticket) => {
@@ -53,7 +70,7 @@ export class EditTicketComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.errorMessage = 'Failed to load ticket';
+          this.errorMessage = err.error?.message || 'Failed to load ticket';
         }
       });
   }
@@ -65,7 +82,8 @@ export class EditTicketComponent implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.http.patch(`/ticket/CLIENT/${this.ticketId}`, this.ticketForm.value)
+    // PATCH requires a body, so we send ticketForm.value
+    this.http.patch(`/api/v1/tickets/${this.ticketId}`, this.ticketForm.value)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: () => {

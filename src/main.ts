@@ -1,19 +1,20 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { importProvidersFrom } from '@angular/core';
-import { HttpClientModule, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+import { importProvidersFrom } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // ✅ add this
 
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { AuthInterceptor } from './app/core/jwt.interceptor';
+import { jwtInterceptor } from './app/core/jwt.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(HttpClientModule),
     provideRouter(routes),
+    importProvidersFrom(FormsModule), // ✅ enable ngModel
     provideHttpClient(
       withFetch(),
-      withInterceptors([AuthInterceptor])
+      withInterceptors([jwtInterceptor])
     ),
   ],
 }).catch(err => console.error(err));

@@ -1,29 +1,8 @@
-<!-- CLIENT VIEW -->
-<div *ngIf="role === 'CLIENT'" class="client-tickets">
-
-  <!-- Create Ticket button at the top, outside any loop -->
-  <button routerLink="/tickets/create">Create Ticket</button>
-
-  <div *ngFor="let ticket of tickets" class="ticket-card">
-    <h3>{{ ticket.title }}</h3>
-    <p>{{ ticket.description }}</p>
-    <p><strong>Category:</strong> {{ ticket.category }}</p>
-    <p><strong>Priority:</strong> {{ ticket.priority }}</p>
-    <p><strong>Status:</strong> {{ ticket.status }}</p>
-
-    <button (click)="editTicket(ticket.id)">Edit</button>
-
-    <!-- Request Meeting button -->
-    <button 
-      (click)="requestMeeting(ticket.id)" 
-      [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
-      {{ requestedMeetings.has(ticket.id) ? 'Meeting Requested' : 'Request Meeting' }}
-    </button>
-  </div>
-</div>
-
 <!-- AGENT / ADMIN VIEW -->
 <div *ngIf="role !== 'CLIENT'" class="agent-admin-tickets">
+
+  <!-- Show success message -->
+  <div *ngIf="message" class="success-message">{{ message }}</div>
 
   <!-- Toggle checkbox -->
   <div class="filter-bar">
@@ -77,4 +56,3 @@
     </tbody>
   </table>
 </div>
-

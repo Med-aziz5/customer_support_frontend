@@ -1,0 +1,11 @@
+<div *ngIf="user$ | async as user" class="sidebar">
+  <p>Welcome, {{ user.email }} ({{ user.role }})</p>
+
+  <ul>
+    <li *ngFor="let link of links">
+      <a [routerLink]="link.route">{{ link.label }}</a>
+    </li>
+  </ul>
+
+  <button (click)="logout()">Logout</button>
+</div>

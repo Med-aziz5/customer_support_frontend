@@ -1,15 +1,34 @@
-header {
-  background-color: #1976d2;
-  color: white;
-  padding: 1rem;
+/* Layout: sidebar + main content */
+.layout {
+  display: flex;
+  height: 100vh; /* full viewport height */
 }
 
-nav a {
-  margin-right: 1rem;
-  color: white;
-  text-decoration: none;
+/* Sidebar width */
+app-sidebar {
+  width: 220px;
+  border-right: 1px solid #ccc;
 }
 
-nav button {
-  margin-left: 1rem;
+/* Main content takes the remaining space */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header fixed at top of main content */
+.header {
+  padding: 15px 20px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Page content scrolls independently */
+.page-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #fff;
 }

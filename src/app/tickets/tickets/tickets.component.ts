@@ -83,23 +83,43 @@ export class TicketsComponent implements OnInit {
     }
   }
 
+message = '';
+messageTimeout: any;
+
+showMessage(msg: string) {
+  this.message = msg;
+  // Clear message after 3 seconds
+  clearTimeout(this.messageTimeout);
+  this.messageTimeout = setTimeout(() => {
+    this.message = '';
+  }, 3000);
+}
+
   assignToSelf(ticketId: number) {
     this.http
-      .patch(`/api/v1/tickets/assign-to-self/${ticketId}`, {}, { observe: 'response' })
+     .patch(`/api/v1/tickets/assign-to-self/${ticketId}`, {}, { observe: 'response' })
       .subscribe({
-        next: () => this.fetchTickets(),
-        error: (err) => console.error('Error assigning ticket:', err),
+       next: () => {
+          this.fetchTickets();
+         this.showMessage('Ticket assigned to you successfully!');
+       },
+       error: (err) => console.error('Error assigning ticket:', err),
       });
   }
 
   assignToAgent(ticketId: number) {
     const agentId = this.assignForm.value.agentId;
     if (!agentId) return;
+
     this.http.post(`/api/v1/tickets/assign/${ticketId}`, { agentId }).subscribe({
-      next: () => this.fetchTickets(),
+      next: () => {
+        this.fetchTickets();
+        this.showMessage('Ticket assigned to the agent successfully!');
+      },
       error: (err) => console.error(err),
     });
   }
+
 
   editTicket(ticketId: number) {
     this.router.navigate(['/tickets/edit', ticketId]);

@@ -1,17 +1,24 @@
-<header>
-  <nav>
-    <a routerLink="/">Home</a>
-    <span *ngIf="user$ | async as user">
-      Welcome, {{ user.email }} ({{ user.role }})
-      <button (click)="logout()">Logout</button>
-    </span>
-    <span *ngIf="!(user$ | async)">
-      <a routerLink="/login">Login</a>
-      <a routerLink="/register">Register</a>
-    </span>
-  </nav>
-</header>
+<!-- Check if user is logged in -->
+<div *ngIf="user$ | async as user; else publicPages" class="layout">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
 
-<main>
+  <!-- Main content -->
+  <div class="main-content">
+    <header class="header">
+      <nav>
+        Welcome, {{ user.email }} ({{ user.role }})
+        <button (click)="logout()">Logout</button>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<!-- Public pages (login/register) -->
+<ng-template #publicPages>
   <router-outlet></router-outlet>
-</main>
+</ng-template>

@@ -16,18 +16,19 @@ export class AuthService {
   user$ = this._user$.asObservable();
 
   // Login
-login(payload: { email: string; password: string }) {
-  return this.http.post<{
-    message: string;
-    data: { accessToken: string; user: User };
-  }>('/api/v1/auth/login', payload).pipe(
-    tap(res => {
-      localStorage.setItem('access_token', res.data.accessToken); // must match getToken()
-      this._user$.next(res.data.user);
-    })
-  );
-}
-
+  login(payload: { email: string; password: string }) {
+    return this.http.post<{
+      message: string;
+      data: { accessToken: string; user: User };
+    }>('/api/v1/auth/login', payload).pipe(
+      tap(res => {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('access_token', res.data.accessToken);
+        }
+        this._user$.next(res.data.user);
+      })
+    );
+  }
 
   // Register
   register(payload: { email: string; password: string; first_name: string; last_name: string }) {
@@ -36,13 +37,15 @@ login(payload: { email: string; password: string }) {
       data: { accessToken: string; user: User };
     }>('/api/v1/auth/register', payload).pipe(
       tap(res => {
-        localStorage.setItem('access_token', res.data.accessToken);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('access_token', res.data.accessToken);
+        }
         this._user$.next(res.data.user);
       })
     );
   }
 
-  // Load user details from server (optional, e.g., refresh page)
+  // Load user details from server
   loadUserDetails() {
     return this.http.get<User>('/api/v1/auth/users/me').pipe(
       tap(user => this._user$.next(user))
@@ -51,19 +54,23 @@ login(payload: { email: string; password: string }) {
 
   // Logout
   logout() {
-   return this.http.post('/api/v1/auth/logout', {}).pipe(
-     tap(() => {
-      localStorage.removeItem('access_token'); 
-      this._user$.next(null);
+    return this.http.post('/api/v1/auth/logout', {}).pipe(
+      tap(() => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('access_token');
+        }
+        this._user$.next(null);
       })
     );
   }
 
   // Get token
-  getToken() {
-     return localStorage.getItem('access_token');
+  getToken(): string | null {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('access_token'); // ✅ fixed key
+    }
+    return null;
   }
-
 
   // Get user object
   getUser(): User | null {

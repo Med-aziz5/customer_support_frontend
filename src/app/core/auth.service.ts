@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
 
 export interface User {
+  id: number;
   email: string;
   first_name?: string;
   last_name?: string;

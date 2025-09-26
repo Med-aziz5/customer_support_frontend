@@ -1,11 +1,9 @@
 <!-- CLIENT VIEW -->
 <div *ngIf="role === 'CLIENT'" class="client-tickets">
 
-  <!-- Show loading or empty state -->
   <div *ngIf="loading">Loading tickets...</div>
   <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
 
-  <!-- Create Ticket button -->
   <button routerLink="/tickets/create">Create Ticket</button>
 
   <div *ngFor="let ticket of tickets" class="ticket-card">
@@ -17,7 +15,6 @@
 
     <button (click)="editTicket(ticket.id)">Edit</button>
 
-    <!-- Request Meeting button -->
     <button 
       (click)="requestMeeting(ticket.id)" 
       [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
@@ -29,10 +26,8 @@
 <!-- AGENT / ADMIN VIEW -->
 <div *ngIf="role !== 'CLIENT'" class="agent-admin-tickets">
 
-  <!-- Show success message -->
   <div *ngIf="message" class="success-message">{{ message }}</div>
 
-  <!-- Toggle checkbox -->
   <div class="filter-bar">
     <label>
       <input type="checkbox" [(ngModel)]="showAssignedOnly" (change)="toggleAssignedTickets()" />
@@ -40,7 +35,6 @@
     </label>
   </div>
 
-  <!-- Loading / Empty -->
   <div *ngIf="loading">Loading tickets...</div>
   <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
 
@@ -67,22 +61,25 @@
         <td>{{ ticket.user_id }}</td>
         <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
         <td>
-          <!-- Assign to self -->
           <button *ngIf="role === 'AGENT' || role === 'ADMIN'" (click)="assignToSelf(ticket.id)">
             Assign to Self
           </button>
 
-          <!-- Assign to another agent (ADMIN only) -->
+          <!-- Admin assigns to agent -->
           <div *ngIf="role === 'ADMIN'" class="assign-admin">
-            <input type="number" placeholder="Agent ID" [formControl]="assignForm.controls['agentId']"/>
-            <button (click)="assignToAgent(ticket.id)">Assign</button>
+            <select [formControl]="assignForm.controls['agentId']">
+              <option value="">Select an agent</option>
+              <option *ngFor="let agent of agents" [value]="agent.id">
+                {{ agent.first_name }} {{ agent.last_name }} ({{ agent.email }})
+              </option>
+            </select>
+            <button (click)="assignToAgent(ticket.id)" [disabled]="!assignForm.value.agentId">
+              Assign
+            </button>
           </div>
         </td>
         <td>
-          <!-- Delete button for Admin -->
-          <button *ngIf="role === 'ADMIN'" (click)="deleteTicket(ticket.id)">
-            Delete
-          </button>
+          <button *ngIf="role === 'ADMIN'" (click)="deleteTicket(ticket.id)">Delete</button>
         </td>
       </tr>
     </tbody>

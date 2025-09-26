@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
-import { AuthService } from '../../core/auth.service';
+import { AuthService, User } from '../../core/auth.service';
 
 interface Ticket {
   id: number;
@@ -31,6 +31,7 @@ export class TicketsComponent implements OnInit {
   router = inject(Router);
 
   tickets: Ticket[] = [];
+  agents: User[] = []; // list of agents for admin
   loading = false;
   role: 'CLIENT' | 'AGENT' | 'ADMIN' = 'CLIENT';
   assignForm = this.fb.group({ agentId: [''] });
@@ -38,22 +39,25 @@ export class TicketsComponent implements OnInit {
   requestedMeetings = new Set<number>();
   showAssignedOnly = false;
 
+  message = '';
+  messageTimeout: any;
+
   ngOnInit() {
     const user = this.auth.getUser();
     if (user && user.role) {
       this.role = user.role as 'CLIENT' | 'AGENT' | 'ADMIN';
     }
     this.fetchTickets();
+
+    // Fetch agents if admin
+    if (this.role === 'ADMIN') {
+      this.fetchAgents();
+    }
   }
 
   fetchTickets() {
     this.loading = true;
-
-    const url =
-      this.role === 'CLIENT'
-        ? '/api/v1/tickets/user'
-        : '/api/v1/tickets';
-
+    const url = this.role === 'CLIENT' ? '/api/v1/tickets/user' : '/api/v1/tickets';
     this.http
       .get<{ data: Ticket[]; total_count: number }>(url)
       .pipe(finalize(() => (this.loading = false)))
@@ -63,48 +67,42 @@ export class TicketsComponent implements OnInit {
       });
   }
 
-  goToCreateTicket() {
-    this.router.navigate(['/tickets/create']);
+  fetchAgents() {
+    this.http.get<{ data: User[] }>('/api/v1/users').subscribe({
+      next: (res) => {
+        this.agents = res.data.filter((u) => u.role === 'AGENT');
+      },
+      error: (err) => console.error('Error fetching agents:', err),
+    });
   }
 
   toggleAssignedTickets() {
     if (this.showAssignedOnly) {
-      this.http
-        .get<{ data: Ticket[] }>('/api/v1/tickets/assigned-to-me')
-        .subscribe({
-          next: (res) => {
-            this.tickets = res.data;
-          },
-          error: (err) =>
-            console.error('Error fetching assigned tickets:', err),
-        });
+      this.http.get<{ data: Ticket[] }>('/api/v1/tickets/assigned-to-me').subscribe({
+        next: (res) => (this.tickets = res.data),
+        error: (err) => console.error('Error fetching assigned tickets:', err),
+      });
     } else {
       this.fetchTickets();
     }
   }
 
-message = '';
-messageTimeout: any;
-
-showMessage(msg: string) {
-  this.message = msg;
-  // Clear message after 3 seconds
-  clearTimeout(this.messageTimeout);
-  this.messageTimeout = setTimeout(() => {
-    this.message = '';
-  }, 3000);
-}
+  showMessage(msg: string) {
+    this.message = msg;
+    clearTimeout(this.messageTimeout);
+    this.messageTimeout = setTimeout(() => {
+      this.message = '';
+    }, 3000);
+  }
 
   assignToSelf(ticketId: number) {
-    this.http
-     .patch(`/api/v1/tickets/assign-to-self/${ticketId}`, {}, { observe: 'response' })
-      .subscribe({
-       next: () => {
-          this.fetchTickets();
-         this.showMessage('Ticket assigned to you successfully!');
-       },
-       error: (err) => console.error('Error assigning ticket:', err),
-      });
+    this.http.patch(`/api/v1/tickets/assign-to-self/${ticketId}`, {}, { observe: 'response' }).subscribe({
+      next: () => {
+        this.fetchTickets();
+        this.showMessage('Ticket assigned to you successfully!');
+      },
+      error: (err) => console.error('Error assigning ticket:', err),
+    });
   }
 
   assignToAgent(ticketId: number) {
@@ -119,7 +117,6 @@ showMessage(msg: string) {
       error: (err) => console.error(err),
     });
   }
-
 
   editTicket(ticketId: number) {
     this.router.navigate(['/tickets/edit', ticketId]);

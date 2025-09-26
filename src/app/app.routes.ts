@@ -6,6 +6,10 @@ import { TicketsComponent } from './tickets/tickets/tickets.component';
 import { CreateTicketComponent } from './tickets/create-ticket/create-ticket.component';
 import { EditTicketComponent } from './tickets/edit-ticket/edit-ticket.component';
 import { AuthGuard } from './core/auth.guard';
+import { UsersComponent } from './users/users.component';
+import { MeetingsComponent } from './meetings/meetings.component';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,10 +19,10 @@ export const routes: Routes = [
   { path: 'tickets/create', component: CreateTicketComponent, canActivate: [AuthGuard] },
   { path: 'tickets/edit/:id', component: EditTicketComponent, canActivate: [AuthGuard] },
   // placeholders for now
-  { path: 'dashboard', component: TicketsComponent, canActivate: [AuthGuard] },
-  { path: 'notifications', component: TicketsComponent, canActivate: [AuthGuard] },
-  { path: 'meetings', component: TicketsComponent, canActivate: [AuthGuard] },
-  { path: 'users', component: TicketsComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
+  { path: 'meetings', component: MeetingsComponent, canActivate: [AuthGuard] },
+  { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
 
   { path: '**', redirectTo: 'login' },
 ];

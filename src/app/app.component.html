@@ -1,24 +1,33 @@
-<!-- Check if user is logged in -->
+<!-- Logged-in users -->
 <div *ngIf="user$ | async as user; else publicPages" class="layout">
   <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+  <aside class="sidebar">
+    <p>Welcome, {{ user.email }} ({{ user.role }})</p>
+
+    <ul>
+      <li><a routerLink="/dashboard">Dashboard</a></li>
+      <li><a routerLink="/tickets">Tickets</a></li>
+      <li><a routerLink="/notifications">Notifications</a></li>
+
+      <li *ngIf="user.role === 'AGENT' || user.role === 'ADMIN'">
+        <a routerLink="/meetings">Meetings</a>
+      </li>
+
+      <li *ngIf="user.role === 'ADMIN'">
+        <a routerLink="/users">Users</a>
+      </li>
+    </ul>
+
+    <button (click)="logout()">Logout</button>
+  </aside>
 
   <!-- Main content -->
   <div class="main-content">
-    <header class="header">
-      <nav>
-        Welcome, {{ user.email }} ({{ user.role }})
-        <button (click)="logout()">Logout</button>
-      </nav>
-    </header>
-
-    <main class="page-content">
-      <router-outlet></router-outlet>
-    </main>
+    <router-outlet></router-outlet>
   </div>
 </div>
 
-<!-- Public pages (login/register) -->
+<!-- Public pages -->
 <ng-template #publicPages>
   <router-outlet></router-outlet>
 </ng-template>

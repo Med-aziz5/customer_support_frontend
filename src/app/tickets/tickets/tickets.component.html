@@ -1,3 +1,31 @@
+<!-- CLIENT VIEW -->
+<div *ngIf="role === 'CLIENT'" class="client-tickets">
+
+  <!-- Show loading or empty state -->
+  <div *ngIf="loading">Loading tickets...</div>
+  <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
+
+  <!-- Create Ticket button -->
+  <button routerLink="/tickets/create">Create Ticket</button>
+
+  <div *ngFor="let ticket of tickets" class="ticket-card">
+    <h3>{{ ticket.title }}</h3>
+    <p>{{ ticket.description }}</p>
+    <p><strong>Category:</strong> {{ ticket.category }}</p>
+    <p><strong>Priority:</strong> {{ ticket.priority }}</p>
+    <p><strong>Status:</strong> {{ ticket.status }}</p>
+
+    <button (click)="editTicket(ticket.id)">Edit</button>
+
+    <!-- Request Meeting button -->
+    <button 
+      (click)="requestMeeting(ticket.id)" 
+      [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
+      {{ requestedMeetings.has(ticket.id) ? 'Meeting Requested' : 'Request Meeting' }}
+    </button>
+  </div>
+</div>
+
 <!-- AGENT / ADMIN VIEW -->
 <div *ngIf="role !== 'CLIENT'" class="agent-admin-tickets">
 
@@ -12,7 +40,11 @@
     </label>
   </div>
 
-  <table>
+  <!-- Loading / Empty -->
+  <div *ngIf="loading">Loading tickets...</div>
+  <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
+
+  <table *ngIf="!loading && tickets.length > 0">
     <thead>
       <tr>
         <th>Title</th>

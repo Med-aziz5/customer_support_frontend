@@ -1,34 +1,32 @@
-/* Layout: sidebar + main content */
 .layout {
   display: flex;
-  height: 100vh; /* full viewport height */
+  height: 100vh;
 }
 
-/* Sidebar width */
-app-sidebar {
+.sidebar {
   width: 220px;
-  border-right: 1px solid #ccc;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 20px;
 }
 
-/* Main content takes the remaining space */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
 .main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Header fixed at top of main content */
-.header {
-  padding: 15px 20px;
-  background-color: #f8f8f8;
-  border-bottom: 1px solid #ccc;
-}
-
-/* Page content scrolls independently */
-.page-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #fff;
+  background: #f5f5f5;
 }

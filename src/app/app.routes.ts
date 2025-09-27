@@ -10,6 +10,7 @@ import { UsersComponent } from './users/users.component';
 import { MeetingsComponent } from './meetings/meetings.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { TicketDetailsComponent } from './tickets/ticket-details/ticket-details.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -23,6 +24,8 @@ export const routes: Routes = [
   { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
   { path: 'meetings', component: MeetingsComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+  { path: 'tickets/:id', component: TicketDetailsComponent, canActivate: [AuthGuard] },
+
 
   { path: '**', redirectTo: 'login' },
 ];

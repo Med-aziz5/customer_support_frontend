@@ -31,7 +31,7 @@ export class TicketsComponent implements OnInit {
   router = inject(Router);
 
   tickets: Ticket[] = [];
-  agents: User[] = []; // list of agents for admin
+  agents: User[] = [];
   loading = false;
   role: 'CLIENT' | 'AGENT' | 'ADMIN' = 'CLIENT';
   assignForm = this.fb.group({ agentId: [''] });
@@ -48,8 +48,6 @@ export class TicketsComponent implements OnInit {
       this.role = user.role as 'CLIENT' | 'AGENT' | 'ADMIN';
     }
     this.fetchTickets();
-
-    // Fetch agents if admin
     if (this.role === 'ADMIN') {
       this.fetchAgents();
     }
@@ -108,7 +106,6 @@ export class TicketsComponent implements OnInit {
   assignToAgent(ticketId: number) {
     const agentId = this.assignForm.value.agentId;
     if (!agentId) return;
-
     this.http.post(`/api/v1/tickets/assign/${ticketId}`, { agentId }).subscribe({
       next: () => {
         this.fetchTickets();
@@ -122,21 +119,29 @@ export class TicketsComponent implements OnInit {
     this.router.navigate(['/tickets/edit', ticketId]);
   }
 
+  goToTicketDetails(ticketId: number) {
+    this.router.navigate(['/tickets', ticketId]);
+  }
+
   deleteTicket(ticketId: number) {
     if (!confirm('Are you sure you want to delete this ticket?')) return;
-
     this.http.delete(`/api/v1/tickets/${ticketId}`).subscribe({
       next: () => {
         alert('Ticket deleted successfully!');
         this.fetchTickets();
       },
-      error: (err) => alert(err.error?.message || 'Failed to delete ticket'),
+      error: (err) => {
+        if (err.status === 403) {
+          alert('You are not authorized to delete this ticket.');
+        } else {
+          alert(err.error?.message || 'Failed to delete ticket.');
+        }
+      },
     });
   }
 
   requestMeeting(ticketId: number) {
     if (!confirm('Do you want to request a meeting for this ticket?')) return;
-
     this.http.post(`/api/v1/meetings/request/${ticketId}`, null).subscribe({
       next: () => {
         alert('Meeting request sent successfully!');

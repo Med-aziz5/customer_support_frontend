@@ -1,1 +1,57 @@
-<p>dashboard works!</p>
+<div class="dashboard" *ngIf="!loading">
+
+  <!-- CLIENT -->
+  <div *ngIf="role === 'CLIENT'">
+    <h2>Client Dashboard</h2>
+    <div class="card">
+      <h3>Total Tickets</h3>
+      <p>{{ stats.totalTickets?.count || stats.totalTickets?.message || 0 }}</p>
+    </div>
+    <div class="card">
+      <h3>Average Rating</h3>
+      <p>{{ stats.myRating?.average || stats.myRating?.message || 0 }}</p>
+    </div>
+  </div>
+
+  <!-- AGENT -->
+  <div *ngIf="role === 'AGENT'">
+    <h2>Agent Dashboard</h2>
+    <div class="card">
+      <h3>Total Tickets Solved</h3>
+      <p>{{ stats.mySolvedTickets?.count || stats.mySolvedTickets?.message || 0 }}</p>
+    </div>
+    <div class="card">
+      <h3>Average Rating</h3>
+      <p>{{ stats.totalSolvedTickets?.average || stats.totalSolvedTickets?.message || 0 }}</p>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div *ngIf="role === 'ADMIN'">
+    <h2>Admin Dashboard</h2>
+    <div class="card">
+      <h3>Total Tickets</h3>
+      <p>{{ stats.totalTickets?.count || stats.totalTickets?.message || 0 }}</p>
+    </div>
+    <div class="card">
+      <h3>Best Performing Agent</h3>
+      <p>{{ stats.bestAgent?.name || stats.bestAgent?.message || 'N/A' }}</p>
+    </div>
+    <div class="card">
+      <h3>Least Performing Agent</h3>
+      <p>{{ stats.worstAgent?.name || stats.worstAgent?.message || 'N/A' }}</p>
+    </div>
+    <div class="card">
+      <h3>Best Rated Agent</h3>
+      <p>{{ stats.bestRatedAgent?.name || stats.bestRatedAgent?.message || 'N/A' }}</p>
+    </div>
+    <div class="card">
+      <h3>Worst Rated Agent</h3>
+      <p>{{ stats.worstRatedAgent?.name || stats.worstRatedAgent?.message || 'N/A' }}</p>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="loading" class="loading">Loading dashboard...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

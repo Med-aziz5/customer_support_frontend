@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -21,7 +21,7 @@ export class RegisterComponent {
     first_name: ['', Validators.required],
     last_name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(6)]],
     confirm_password: ['', Validators.required],
   });
 
@@ -29,28 +29,39 @@ export class RegisterComponent {
   serverError: string | null = null;
 
   submit() {
-    if (this.form.invalid) return;
+    console.log('Form submitted', this.form.value, 'Valid?', this.form.valid);
 
-    if (this.form.value.password !== this.form.value.confirm_password) {
+    if (this.form.invalid) {
+      this.serverError = "Please fill all fields correctly";
+      return;
+    }
+
+    const { first_name, last_name, email, password, confirm_password } = this.form.value;
+
+    if (password !== confirm_password) {
       this.serverError = "Passwords do not match";
       return;
     }
 
+    const payload = {
+      first_name: first_name!,
+      last_name: last_name!,
+      email: email!,
+      password: password!,
+    };
+
     this.loading = true;
     this.serverError = null;
-
-    const payload = {
-      first_name: this.form.value.first_name!,
-      last_name: this.form.value.last_name!,
-      email: this.form.value.email!,
-      password: this.form.value.password!,
-    };
 
     this.auth.register(payload)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: () => this.router.navigate(['/tickets']),
+        next: () => {
+          console.log('Registration successful');
+          this.router.navigate(['/tickets']);
+        },
         error: err => {
+          console.error('Registration error', err);
           this.serverError = err?.error?.message || 'Registration failed';
         }
       });

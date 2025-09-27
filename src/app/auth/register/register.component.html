@@ -2,38 +2,57 @@
   <h2>Create Account</h2>
   <form [formGroup]="form" (ngSubmit)="submit()">
 
+    <!-- First Name -->
     <div class="form-group">
       <label for="first_name">First Name</label>
       <input id="first_name" formControlName="first_name" type="text" />
+      <div class="error" *ngIf="form.get('first_name')?.touched && form.get('first_name')?.invalid">
+        First name is required.
+      </div>
     </div>
 
+    <!-- Last Name -->
     <div class="form-group">
       <label for="last_name">Last Name</label>
       <input id="last_name" formControlName="last_name" type="text" />
+      <div class="error" *ngIf="form.get('last_name')?.touched && form.get('last_name')?.invalid">
+        Last name is required.
+      </div>
     </div>
 
+    <!-- Email -->
     <div class="form-group">
       <label for="email">Email</label>
       <input id="email" formControlName="email" type="email" />
+      <div class="error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+        <span *ngIf="form.get('email')?.errors?.['required']">Email is required.</span>
+        <span *ngIf="form.get('email')?.errors?.['email']">Invalid email format.</span>
+      </div>
     </div>
 
+    <!-- Password -->
     <div class="form-group">
       <label for="password">Password</label>
       <input id="password" formControlName="password" type="password" />
+      <div class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+        <span *ngIf="form.get('password')?.errors?.['required']">Password is required.</span>
+        <span *ngIf="form.get('password')?.errors?.['minlength']">
+          Password must be at least 6 characters.
+        </span>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="confirm_password">Confirm Password</label>
-      <input id="confirm_password" formControlName="confirm_password" type="password" />
-    </div>
 
-    <button type="submit" [disabled]="form.invalid || loading">
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="loading">
       {{ loading ? 'Registering...' : 'Register' }}
     </button>
 
+    <!-- Server error -->
     <div *ngIf="serverError" class="error">{{ serverError }}</div>
   </form>
-    <p class="switch-link">
+
+  <p class="switch-link">
     Already have an account? <a routerLink="/login">Login here</a>
   </p>
 </div>

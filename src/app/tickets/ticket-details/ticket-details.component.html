@@ -6,45 +6,47 @@
   <!-- Comments Section -->
   <section class="comments-section">
     <h3>Comments</h3>
-
     <div *ngFor="let c of comments" class="comment">
       <p>
-        <strong>{{ c.author?.email || 'Unknown' }} ({{ c.author?.role || 'N/A' }}):</strong>
-        {{ c.content }}
+        <strong>
+          {{ c.author?.email || 'Unknown' }} ({{ c.author?.role || 'N/A' }})
+        </strong>
+        : {{ c.content }}
       </p>
-      <small>{{ c.created_at }}</small>
+      <small>{{ c.created_at | date: 'short' }}</small>
     </div>
 
-    <!-- Add Comment (CLIENT / AGENT / ADMIN) -->
-    <div *ngIf="role === 'CLIENT' || role === 'AGENT' || role === 'ADMIN'" class="add-comment">
+    <!-- Comment form (all logged-in users can comment) -->
+    <div *ngIf="auth.getUser() as user">
       <textarea [formControl]="newComment" placeholder="Add a comment"></textarea>
       <button (click)="addComment()">Submit Comment</button>
     </div>
   </section>
 
-  <!-- Notes Section (AGENT / ADMIN) -->
-  <section *ngIf="role !== 'CLIENT'" class="notes-section">
-    <h3>Notes (Private for Agents)</h3>
-
+  <!-- Notes Section (Agent/Admin only) -->
+  <section *ngIf="role === 'AGENT' || role === 'ADMIN'" class="notes-section">
+    <h3>Notes </h3>
     <div *ngFor="let n of notes" class="note">
       <p>{{ n.content }}</p>
-      <small>{{ n.created_at }} - {{ n.agent?.email || 'Unknown' }}</small>
+      <small>
+        - {{ n.agent?.email || 'Unknown' }}
+      </small>
     </div>
 
-    <!-- Add Note -->
-    <div class="add-note">
-      <textarea [formControl]="newNote" placeholder="Add a note"></textarea>
-      <button (click)="addNote()">Submit Note</button>
-    </div>
+    <!-- Note form (only Agent/Admin) -->
+    <textarea [formControl]="newNote" placeholder="Add a note"></textarea>
+    <button (click)="addNote()">Submit Note</button>
   </section>
 
   <!-- History Section -->
   <section class="history-section">
     <h3>Ticket History</h3>
-
     <div *ngFor="let h of history" class="history-entry">
-      <p>{{ h.user?.email || 'Unknown' }} ({{ h.user?.role || 'N/A' }}) - {{ h.action }}</p>
-      <small>{{ h.created_at }}</small>
+      <p>
+        {{ h.user?.email || 'Unknown' }} ({{ h.user?.role || 'N/A' }})
+        - {{ h.action }}
+      </p>
+      <small>{{ h.created_at | date: 'short' }}</small>
     </div>
   </section>
 </div>

@@ -22,7 +22,6 @@ export class RegisterComponent {
     last_name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    confirm_password: ['', Validators.required],
   });
 
   loading = false;
@@ -36,12 +35,7 @@ export class RegisterComponent {
       return;
     }
 
-    const { first_name, last_name, email, password, confirm_password } = this.form.value;
-
-    if (password !== confirm_password) {
-      this.serverError = "Passwords do not match";
-      return;
-    }
+    const { first_name, last_name, email, password } = this.form.value;
 
     const payload = {
       first_name: first_name!,

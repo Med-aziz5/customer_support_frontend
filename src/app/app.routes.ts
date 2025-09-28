@@ -7,7 +7,7 @@ import { CreateTicketComponent } from './tickets/create-ticket/create-ticket.com
 import { EditTicketComponent } from './tickets/edit-ticket/edit-ticket.component';
 import { AuthGuard } from './core/auth.guard';
 import { UsersComponent } from './users/users.component';
-import { MeetingsComponent } from './meetings/meetings.component';
+import { MeetingComponent } from './meetings/meetings.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TicketDetailsComponent } from './tickets/ticket-details/ticket-details.component';
@@ -22,7 +22,7 @@ export const routes: Routes = [
   // placeholders for now
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'notifications', component: NotificationsComponent, canActivate: [AuthGuard] },
-  { path: 'meetings', component: MeetingsComponent, canActivate: [AuthGuard] },
+  { path: 'meetings', component: MeetingComponent, canActivate: [AuthGuard] },
   { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
   { path: 'tickets/:id', component: TicketDetailsComponent, canActivate: [AuthGuard] },
 

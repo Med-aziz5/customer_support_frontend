@@ -1,1 +1,24 @@
-<p>meetings works!</p>
+<div class="meetings" *ngIf="!loading && !error">
+  <h2 *ngIf="role === 'ADMIN'">All Meetings (Admin)</h2>
+  <h2 *ngIf="role === 'AGENT'">My Meetings (Agent)</h2>
+
+  <div *ngIf="meetings.length > 0; else noMeetings">
+    <div *ngFor="let meeting of meetings" class="card">
+      <h3>Meeting for Ticket #{{ meeting.ticket_id }}</h3>
+      <p><strong>Client:</strong> {{ meeting.client?.username || meeting.client_id }}</p>
+      <p><strong>Agent:</strong> {{ meeting.agent?.username || meeting.agent_id }}</p>
+      <p><strong>Date:</strong> {{ meeting.scheduled_at | date:'medium' }}</p>
+      <p><strong>Status:</strong> {{ meeting.status }}</p>
+      <p *ngIf="meeting.meeting_link">
+        <a [href]="meeting.meeting_link" target="_blank">Join Meeting</a>
+      </p>
+    </div>
+  </div>
+
+  <ng-template #noMeetings>
+    <p>No meetings scheduled.</p>
+  </ng-template>
+</div>
+
+<div *ngIf="loading" class="loading">Loading meetings...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

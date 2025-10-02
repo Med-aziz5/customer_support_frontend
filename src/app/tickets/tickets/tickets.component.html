@@ -1,6 +1,5 @@
 <!-- CLIENT VIEW -->
 <div *ngIf="role === 'CLIENT'" class="client-tickets">
-
   <div *ngIf="loading">Loading tickets...</div>
   <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
 
@@ -16,8 +15,8 @@
     <button (click)="editTicket(ticket.id)">Edit</button>
     <button (click)="goToTicketDetails(ticket.id)">View Details</button>
 
-    <button 
-      (click)="requestMeeting(ticket.id)" 
+    <button
+      (click)="requestMeeting(ticket.id)"
       [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
       {{ requestedMeetings.has(ticket.id) ? 'Meeting Requested' : 'Request Meeting' }}
     </button>
@@ -26,7 +25,6 @@
 
 <!-- AGENT / ADMIN VIEW -->
 <div *ngIf="role !== 'CLIENT'" class="agent-admin-tickets">
-
   <div *ngIf="message" class="success-message">{{ message }}</div>
 
   <div class="filter-bar">
@@ -50,6 +48,7 @@
         <th>User ID</th>
         <th>Assigned To</th>
         <th>Actions</th>
+        <th *ngIf="role === 'ADMIN'">Admin Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -62,12 +61,14 @@
         <td>{{ ticket.user_id }}</td>
         <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
         <td>
-          <button *ngIf="role === 'AGENT' || role === 'ADMIN'" (click)="assignToSelf(ticket.id)">
+          <!-- Assign to self button: only if ticket is unassigned -->
+          <button *ngIf="(role === 'AGENT' || role === 'ADMIN') && !ticket.assigned_to"
+                  (click)="assignToSelf(ticket.id)">
             Assign to Self
           </button>
 
-          <!-- Admin assigns to agent -->
-          <div *ngIf="role === 'ADMIN'" class="assign-admin">
+          <!-- Admin assigns to agent: only if ticket is unassigned -->
+          <div *ngIf="role === 'ADMIN' && !ticket.assigned_to" class="assign-admin">
             <select [formControl]="assignForm.controls['agentId']">
               <option value="">Select an agent</option>
               <option *ngFor="let agent of agents" [value]="agent.id">
@@ -82,8 +83,8 @@
           <!-- View details button -->
           <button (click)="goToTicketDetails(ticket.id)">View Details</button>
         </td>
-        <td>
-          <button *ngIf="role === 'ADMIN'" (click)="deleteTicket(ticket.id)">Delete</button>
+        <td *ngIf="role === 'ADMIN'">
+          <button (click)="deleteTicket(ticket.id)">Delete</button>
         </td>
       </tr>
     </tbody>

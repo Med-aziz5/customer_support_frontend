@@ -1,47 +1,123 @@
-.register-card {
-  max-width: 420px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  background: #fff;
-}
-
-h2 {
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 1rem;
+/* Base */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f7f9fc; /* light background */
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-label {
-  font-weight: 500;
-  margin-bottom: 0.3rem;
+/* Container */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Card */
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 2.2rem;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e6e9f0;
+  color: #333;
+  animation: fadeIn 0.8s ease;
+}
+
+/* Header */
+.register-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-header h2 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.register-header p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-top: 0.3rem;
+}
+
+/* Floating label form */
+.form-group {
+  position: relative;
+  margin-bottom: 1.5rem;
 }
 
 input {
-  padding: 0.6rem;
+  width: 100%;
+  padding: 1rem 0.8rem 0.5rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  background: #fdfdfd;
+  color: #222;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
+input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.15);
+}
+
+/* Floating labels */
+label {
+  position: absolute;
+  left: 0.9rem;
+  top: 1rem;
+  color: #777;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  background: white;
+  padding: 0 4px;
+}
+
+input:focus + label,
+input:not(:placeholder-shown) + label {
+  top: -0.5rem;
+  left: 0.8rem;
+  font-size: 0.8rem;
+  color: #2575fc;
+}
+
+/* Error */
+.error {
+  color: #d93025;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+/* Button */
 button {
   width: 100%;
-  padding: 0.7rem;
-  background: #28a745;
-  color: white;
+  padding: 0.9rem;
+  background: linear-gradient(90deg, #2575fc, #6a11cb);
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-button:hover:not([disabled]) {
-  background: #218838;
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
 button[disabled] {
@@ -49,23 +125,48 @@ button[disabled] {
   cursor: not-allowed;
 }
 
-.error {
-  color: red;
-  font-size: 0.85rem;
-  margin-top: 0.2rem;
-}
-
+/* Switch link */
 .switch-link {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: #555;
 }
 
 .switch-link a {
-  color: #007bff;
+  color: #2575fc;
+  font-weight: 600;
   text-decoration: none;
+  transition: opacity 0.3s ease;
 }
 
 .switch-link a:hover {
-  text-decoration: underline;
+  opacity: 0.7;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .register-card {
+    padding: 1.6rem;
+  }
+
+  .register-header h2 {
+    font-size: 1.4rem;
+  }
+
+  input {
+    font-size: 0.95rem;
+  }
 }

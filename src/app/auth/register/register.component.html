@@ -1,58 +1,60 @@
-<div class="register-card">
-  <h2>Create Account</h2>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-
-    <!-- First Name -->
-    <div class="form-group">
-      <label for="first_name">First Name</label>
-      <input id="first_name" formControlName="first_name" type="text" />
-      <div class="error" *ngIf="form.get('first_name')?.touched && form.get('first_name')?.invalid">
-        First name is required.
-      </div>
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h2>Create Account</h2>
+      <p>Fill in the details to create your account</p>
     </div>
 
-    <!-- Last Name -->
-    <div class="form-group">
-      <label for="last_name">Last Name</label>
-      <input id="last_name" formControlName="last_name" type="text" />
-      <div class="error" *ngIf="form.get('last_name')?.touched && form.get('last_name')?.invalid">
-        Last name is required.
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <!-- First Name -->
+      <div class="form-group">
+        <input id="first_name" formControlName="first_name" type="text" placeholder=" " />
+        <label for="first_name">First Name</label>
+        <div class="error" *ngIf="form.get('first_name')?.touched && form.get('first_name')?.invalid">
+          First name is required.
+        </div>
       </div>
-    </div>
 
-    <!-- Email -->
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input id="email" formControlName="email" type="email" />
-      <div class="error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
-        <span *ngIf="form.get('email')?.errors?.['required']">Email is required.</span>
-        <span *ngIf="form.get('email')?.errors?.['email']">Invalid email format.</span>
+      <!-- Last Name -->
+      <div class="form-group">
+        <input id="last_name" formControlName="last_name" type="text" placeholder=" " />
+        <label for="last_name">Last Name</label>
+        <div class="error" *ngIf="form.get('last_name')?.touched && form.get('last_name')?.invalid">
+          Last name is required.
+        </div>
       </div>
-    </div>
 
-    <!-- Password -->
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input id="password" formControlName="password" type="password" />
-      <div class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
-        <span *ngIf="form.get('password')?.errors?.['required']">Password is required.</span>
-        <span *ngIf="form.get('password')?.errors?.['minlength']">
-          Password must be at least 6 characters.
-        </span>
+      <!-- Email -->
+      <div class="form-group">
+        <input id="email" formControlName="email" type="email" placeholder=" " />
+        <label for="email">Email</label>
+        <div class="error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+          <span *ngIf="form.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="form.get('email')?.errors?.['email']">Invalid email format.</span>
+        </div>
       </div>
-    </div>
 
+      <!-- Password -->
+      <div class="form-group">
+        <input id="password" formControlName="password" type="password" placeholder=" " />
+        <label for="password">Password</label>
+        <div class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+          <span *ngIf="form.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="form.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</span>
+        </div>
+      </div>
 
-    <!-- Submit Button -->
-    <button type="submit" [disabled]="loading">
-      {{ loading ? 'Registering...' : 'Register' }}
-    </button>
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Registering...' : 'Register' }}
+      </button>
 
-    <!-- Server error -->
-    <div *ngIf="serverError" class="error">{{ serverError }}</div>
-  </form>
+      <!-- Server Error -->
+      <div *ngIf="serverError" class="error">{{ serverError }}</div>
+    </form>
 
-  <p class="switch-link">
-    Already have an account? <a routerLink="/login">Login here</a>
-  </p>
+    <p class="switch-link">
+      Already have an account? <a routerLink="/login">Login here</a>
+    </p>
+  </div>
 </div>

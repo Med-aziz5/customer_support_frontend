@@ -1,29 +1,37 @@
-<div class="login-card">
-  <h2>Sign in</h2>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input id="email" formControlName="email" type="email" />
-      <div class="error" *ngIf="form.controls.email.invalid && form.controls.email.touched">
-        Enter a valid email
-      </div>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2>Welcome </h2>
+      <p>Please sign in to continue</p>
     </div>
 
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input id="password" formControlName="password" type="password" />
-      <div class="error" *ngIf="form.controls.password.invalid && form.controls.password.touched">
-        Password is required
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <input id="email" formControlName="email" type="email" required placeholder=" " />
+        <label for="email">Email</label>
+        <div class="error" *ngIf="form.controls.email.invalid && form.controls.email.touched">
+          Enter a valid email
+        </div>
       </div>
-    </div>
 
-    <button type="submit" [disabled]="form.invalid || loading">
-      {{ loading ? 'Logging in...' : 'Login' }}
-    </button>
+      <div class="form-group">
+        <input id="password" formControlName="password" type="password" required placeholder=" " />
+        <label for="password">Password</label>
+        <div class="error" *ngIf="form.controls.password.invalid && form.controls.password.touched">
+          Password is required
+        </div>
+      </div>
 
-    <div *ngIf="serverError" class="error">{{ serverError }}</div>
-  </form>
-   <p class="switch-link">
-    Don't have an account? <a routerLink="/register">Register here</a>
-  </p>
+      <button type="submit" [disabled]="form.invalid || loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+
+      <div *ngIf="serverError" class="error">{{ serverError }}</div>
+    </form>
+
+    <p class="switch-link">
+      Don’t have an account?
+      <a routerLink="/register">Register here</a>
+    </p>
+  </div>
 </div>

@@ -1,11 +1,17 @@
 <div *ngIf="user$ | async as user" class="sidebar">
-  <p>Welcome, {{ user.email }} ({{ user.role }})</p>
+  <div class="sidebar-header">
+    <h3>Dashboard</h3>
+    <p>Welcome, {{ user.email }}</p>
+    <span class="role">{{ user.role | titlecase }}</span>
+  </div>
 
-  <ul>
+  <ul class="sidebar-links">
     <li *ngFor="let link of links">
-      <a [routerLink]="link.route">{{ link.label }}</a>
+      <a [routerLink]="link.route">
+        <span>{{ link.label }}</span>
+      </a>
     </li>
   </ul>
 
-  <button (click)="logout()">Logout</button>
+  <button class="logout-btn" (click)="logout()">Logout</button>
 </div>

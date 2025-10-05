@@ -1,53 +1,77 @@
-.dashboard {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 1rem;
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+/* LIGHT GRAY DASHBOARD PAGE */
+.dashboard-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #e5e7eb; /* soft light gray */
+  font-family: 'Inter', sans-serif;
+  color: #1f2937; /* dark gray text */
 }
 
-h2 {
-  grid-column: 1 / -1;
+/* HEADER */
+.dashboard-header {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
-
-.card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+.dashboard-header h3 {
+  font-size: 2.8rem;
+  color: #111827; /* almost black for contrast */
+  letter-spacing: 1px;
 }
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-}
-
-.card h3 {
-  margin-bottom: 0.5rem;
-  color: #333;
+.dashboard-header p {
   font-size: 1.1rem;
+  color: #000001; /* medium gray */
 }
 
-.card p {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #28a745;
-  margin: 0.2rem 0;
+/* GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
 }
 
-.error {
-  color: red;
-  text-align: center;
-  margin-top: 1rem;
+/* GLASSMORPHISM STAT CARD */
+.stat-card {
+  background: rgba(255, 255, 255, 0.6); /* semi-transparent white */
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-
-.loading {
-  text-align: center;
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+.card-content h3 {
   font-size: 1.2rem;
-  color: #555;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+.chart-placeholder {
+  font-size: 1.5rem;
+  opacity: 0.6;
+}
+
+/* COLOR ACCENTS */
+.stat-card.client { border-left: 6px solid #fbbf24; } /* amber/light gold */
+.stat-card.agent { border-left: 6px solid #34d399; } /* soft green */
+.stat-card.admin { border-left: 6px solid #f87171; } /* soft red */
+
+/* LOADING AND ERROR */
+.loading, .error {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 3rem;
+}
+.error { color: #b91c1c; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr; }
 }

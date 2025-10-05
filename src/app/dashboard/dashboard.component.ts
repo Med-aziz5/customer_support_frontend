@@ -13,18 +13,21 @@ import { finalize, take } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
   private dashboardService = inject(DashboardService);
-  private auth = inject(AuthService);
+  public auth = inject(AuthService); // Now public for template access
 
-  role: string | null = null;
+  role: 'CLIENT' | 'AGENT' | 'ADMIN' | null = null;
   loading = true;
   error: string | null = null;
 
   stats: any = {};
 
+  // Animated counters
+  counters: Record<string, number> = {};
+
   ngOnInit() {
     this.auth.user$.pipe(take(1)).subscribe({
       next: user => {
-        this.role = user?.role || null;
+        this.role = user?.role as 'CLIENT' | 'AGENT' | 'ADMIN' || null;
         this.loadStats();
       },
       error: err => {
@@ -46,6 +49,18 @@ export class DashboardComponent implements OnInit {
     };
   }
 
+  private animateCounter(statKey: string, value: number) {
+    this.counters[statKey] = 0;
+    const step = Math.max(1, Math.floor(value / 50));
+    const interval = setInterval(() => {
+      this.counters[statKey] += step;
+      if (this.counters[statKey] >= value) {
+        this.counters[statKey] = value;
+        clearInterval(interval);
+      }
+    }, 20);
+  }
+
   loadStats() {
     if (!this.role) {
       this.loading = false;
@@ -60,7 +75,10 @@ export class DashboardComponent implements OnInit {
         this.dashboardService.getTotalTicketsByUser()
           .pipe(finalize(() => this.loading = false))
           .subscribe({
-            next: res => this.stats.totalTickets = res,
+            next: res => {
+              this.stats.totalTickets = res;
+              if (res?.count) this.animateCounter('totalTickets', res.count);
+            },
             error: this.handleStatError('totalTickets')
           })
       );
@@ -69,7 +87,10 @@ export class DashboardComponent implements OnInit {
         this.dashboardService.getMyAverageRating()
           .pipe(finalize(() => this.loading = false))
           .subscribe({
-            next: res => this.stats.myRating = res,
+            next: res => {
+              this.stats.myRating = res;
+              if (res?.average) this.animateCounter('myRating', res.average);
+            },
             error: this.handleStatError('myRating')
           })
       );
@@ -81,7 +102,10 @@ export class DashboardComponent implements OnInit {
         this.dashboardService.getMySolvedTickets()
           .pipe(finalize(() => this.loading = false))
           .subscribe({
-            next: res => this.stats.mySolvedTickets = res,
+            next: res => {
+              this.stats.mySolvedTickets = res;
+              if (res?.count) this.animateCounter('mySolvedTickets', res.count);
+            },
             error: this.handleStatError('mySolvedTickets')
           })
       );
@@ -90,7 +114,10 @@ export class DashboardComponent implements OnInit {
         this.dashboardService.getTotalSolvedTickets()
           .pipe(finalize(() => this.loading = false))
           .subscribe({
-            next: res => this.stats.totalSolvedTickets = res,
+            next: res => {
+              this.stats.totalSolvedTickets = res;
+              if (res?.average) this.animateCounter('totalSolvedTickets', res.average);
+            },
             error: this.handleStatError('totalSolvedTickets')
           })
       );
@@ -111,14 +138,16 @@ export class DashboardComponent implements OnInit {
           stat.method()
             .pipe(finalize(() => this.loading = false))
             .subscribe({
-              next: res => this.stats[stat.key] = res || null,
+              next: res => {
+                this.stats[stat.key] = res || null;
+                if (res?.count || res?.average) this.animateCounter(stat.key, res.count || res.average);
+              },
               error: this.handleStatError(stat.key)
             })
         );
       });
     }
 
-    // If no requests were added, stop loading
     if (requests.length === 0) this.loading = false;
   }
 }

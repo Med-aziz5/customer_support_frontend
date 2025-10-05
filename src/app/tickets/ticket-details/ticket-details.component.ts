@@ -27,6 +27,19 @@ interface TicketHistory {
   user?: { id: number; email: string; role: string };
 }
 
+interface Ticket {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  priority: string;
+  status: string;
+  assigned_to?: string;
+  user?: { id: number; email: string };
+  created_at: string;
+  updated_at?: string;
+}
+
 @Component({
   selector: 'app-ticket-details',
   standalone: true,
@@ -41,6 +54,7 @@ export class TicketDetailsComponent implements OnInit {
   auth = inject(AuthService);
 
   ticketId!: number;
+  ticket?: Ticket; // <-- Add ticket property
   role!: 'CLIENT' | 'AGENT' | 'ADMIN';
   loading = false;
 
@@ -61,6 +75,14 @@ export class TicketDetailsComponent implements OnInit {
 
   fetchTicketData() {
     this.loading = true;
+
+    // Fetch main ticket details
+    this.http
+      .get<{ data: Ticket }>(`/api/v1/tickets/${this.ticketId}`)
+      .subscribe({
+        next: (res) => (this.ticket = res.data),
+        error: () => (this.ticket = undefined),
+      });
 
     // Fetch comments
     this.http
@@ -107,18 +129,17 @@ export class TicketDetailsComponent implements OnInit {
       });
   }
 
- addNote() {
-  if (!this.newNote.value || this.role === 'CLIENT') return;
-  this.http
-    .post<{ data: Note }>(`/api/v1/notes/tickets/${this.ticketId}`, {
-      content: this.newNote.value,
-    })
-    .subscribe({
-      next: (res) => {
-        this.notes.push(res.data);
-        this.newNote.reset();
-      },
-    });
-}
-
+  addNote() {
+    if (!this.newNote.value || this.role === 'CLIENT') return;
+    this.http
+      .post<{ data: Note }>(`/api/v1/notes/tickets/${this.ticketId}`, {
+        content: this.newNote.value,
+      })
+      .subscribe({
+        next: (res) => {
+          this.notes.push(res.data);
+          this.newNote.reset();
+        },
+      });
+  }
 }

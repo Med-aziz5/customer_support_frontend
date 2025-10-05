@@ -1,25 +1,28 @@
 <!-- CLIENT VIEW -->
 <div *ngIf="role === 'CLIENT'" class="client-tickets">
-  <div *ngIf="loading">Loading tickets...</div>
-  <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
+  <div *ngIf="loading" class="loading">Loading tickets...</div>
+  <div *ngIf="!loading && tickets.length === 0" class="no-tickets">No tickets found.</div>
 
-  <button routerLink="/tickets/create">Create Ticket</button>
+  <button routerLink="/tickets/create" class="create-ticket-btn">Create Ticket</button>
 
-  <div *ngFor="let ticket of tickets" class="ticket-card">
-    <h3>{{ ticket.title }}</h3>
-    <p>{{ ticket.description }}</p>
-    <p><strong>Category:</strong> {{ ticket.category }}</p>
-    <p><strong>Priority:</strong> {{ ticket.priority }}</p>
-    <p><strong>Status:</strong> {{ ticket.status }}</p>
+  <div class="ticket-cards-wrapper">
+    <div *ngFor="let ticket of tickets" class="ticket-card">
+      <h3>{{ ticket.title }}</h3>
+      <p>{{ ticket.description }}</p>
+      <p><strong>Category:</strong> {{ ticket.category }}</p>
+      <p><strong>Priority:</strong> {{ ticket.priority }}</p>
+      <p><strong>Status:</strong> <span class="status">{{ ticket.status }}</span></p>
 
-    <button (click)="editTicket(ticket.id)">Edit</button>
-    <button (click)="goToTicketDetails(ticket.id)">View Details</button>
-
-    <button
-      (click)="requestMeeting(ticket.id)"
-      [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
-      {{ requestedMeetings.has(ticket.id) ? 'Meeting Requested' : 'Request Meeting' }}
-    </button>
+      <div class="ticket-actions">
+        <button (click)="editTicket(ticket.id)">Edit</button>
+        <button (click)="goToTicketDetails(ticket.id)">View Details</button>
+        <button
+          (click)="requestMeeting(ticket.id)"
+          [disabled]="ticket.status === 'CLOSED' || requestedMeetings.has(ticket.id)">
+          {{ requestedMeetings.has(ticket.id) ? 'Meeting Requested' : 'Request Meeting' }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -34,59 +37,51 @@
     </label>
   </div>
 
-  <div *ngIf="loading">Loading tickets...</div>
-  <div *ngIf="!loading && tickets.length === 0">No tickets found.</div>
+  <div *ngIf="loading" class="loading">Loading tickets...</div>
+  <div *ngIf="!loading && tickets.length === 0" class="no-tickets">No tickets found.</div>
 
-  <table *ngIf="!loading && tickets.length > 0">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Category</th>
-        <th>Priority</th>
-        <th>Status</th>
-        <th>User ID</th>
-        <th>Assigned To</th>
-        <th>Actions</th>
-        <th *ngIf="role === 'ADMIN'">Admin Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let ticket of tickets">
-        <td>{{ ticket.title }}</td>
-        <td>{{ ticket.description }}</td>
-        <td>{{ ticket.category }}</td>
-        <td>{{ ticket.priority }}</td>
-        <td>{{ ticket.status }}</td>
-        <td>{{ ticket.user_id }}</td>
-        <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
-        <td>
-          <!-- Assign to self button: only if ticket is unassigned -->
-          <button *ngIf="(role === 'AGENT' || role === 'ADMIN') && !ticket.assigned_to"
-                  (click)="assignToSelf(ticket.id)">
-            Assign to Self
-          </button>
-
-          <!-- Admin assigns to agent: only if ticket is unassigned -->
-          <div *ngIf="role === 'ADMIN' && !ticket.assigned_to" class="assign-admin">
-            <select [formControl]="assignForm.controls['agentId']">
-              <option value="">Select an agent</option>
-              <option *ngFor="let agent of agents" [value]="agent.id">
-                {{ agent.first_name }} {{ agent.last_name }} ({{ agent.email }})
-              </option>
-            </select>
-            <button (click)="assignToAgent(ticket.id)" [disabled]="!assignForm.value.agentId">
-              Assign
-            </button>
-          </div>
-
-          <!-- View details button -->
-          <button (click)="goToTicketDetails(ticket.id)">View Details</button>
-        </td>
-        <td *ngIf="role === 'ADMIN'">
-          <button (click)="deleteTicket(ticket.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-wrapper" *ngIf="!loading && tickets.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>User ID</th>
+          <th>Assigned To</th>
+          <th>Actions</th>
+          <th *ngIf="role === 'ADMIN'">Admin Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of tickets">
+          <td>{{ ticket.title }}</td>
+          <td>{{ ticket.description }}</td>
+          <td>{{ ticket.category }}</td>
+          <td>{{ ticket.priority }}</td>
+          <td><span class="status">{{ ticket.status }}</span></td>
+          <td>{{ ticket.user_id }}</td>
+          <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
+          <td>
+            <button *ngIf="!ticket.assigned_to" (click)="assignToSelf(ticket.id)">Assign to Self</button>
+            <div *ngIf="role === 'ADMIN' && !ticket.assigned_to" class="assign-admin">
+              <select [formControl]="assignForm.controls['agentId']">
+                <option value="">Select an agent</option>
+                <option *ngFor="let agent of agents" [value]="agent.id">
+                  {{ agent.first_name }} {{ agent.last_name }} ({{ agent.email }})
+                </option>
+              </select>
+              <button (click)="assignToAgent(ticket.id)" [disabled]="!assignForm.value.agentId">Assign</button>
+            </div>
+            <button (click)="goToTicketDetails(ticket.id)">View Details</button>
+          </td>
+          <td *ngIf="role === 'ADMIN'">
+            <button class="delete-btn" (click)="deleteTicket(ticket.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

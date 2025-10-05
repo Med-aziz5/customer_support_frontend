@@ -1,45 +1,53 @@
-<div class="create-ticket-container">
-  <h2>Create a New Ticket</h2>
+<div class="create-ticket-page">
+  <div class="create-ticket-card">
+    <h2>Create a New Ticket</h2>
 
-  <form [formGroup]="ticketForm" (ngSubmit)="submitTicket()">
-    <label>
-      Title:
-      <input formControlName="title" />
-    </label>
-    <div *ngIf="ticketForm.controls['title'].invalid && ticketForm.controls['title'].touched" class="error">
-      Title is required
-    </div>
+    <form [formGroup]="ticketForm" (ngSubmit)="submitTicket()">
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input id="title" formControlName="title" placeholder="Enter ticket title" />
+        <div class="error" *ngIf="ticketForm.controls['title'].invalid && ticketForm.controls['title'].touched">
+          Title is required
+        </div>
+      </div>
 
-    <label>
-      Description:
-      <textarea formControlName="description"></textarea>
-    </label>
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" placeholder="Describe the issue..."></textarea>
+      </div>
 
-    <label>
-      Category:
-      <select formControlName="category">
-        <option value="">Select Category</option>
-        <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
-      </select>
-    </label>
-    <div *ngIf="ticketForm.controls['category'].invalid && ticketForm.controls['category'].touched" class="error">
-      Category is required
-    </div>
+      <!-- Category -->
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" formControlName="category">
+          <option value="">Select Category</option>
+          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        </select>
+        <div class="error" *ngIf="ticketForm.controls['category'].invalid && ticketForm.controls['category'].touched">
+          Category is required
+        </div>
+      </div>
 
-    <label>
-      Priority:
-      <select formControlName="priority">
-        <option value="">Select Priority</option>
-        <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
-      </select>
-    </label>
-    <div *ngIf="ticketForm.controls['priority'].invalid && ticketForm.controls['priority'].touched" class="error">
-      Priority is required
-    </div>
+      <!-- Priority -->
+      <div class="form-group">
+        <label for="priority">Priority</label>
+        <select id="priority" formControlName="priority">
+          <option value="">Select Priority</option>
+          <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+        </select>
+        <div class="error" *ngIf="ticketForm.controls['priority'].invalid && ticketForm.controls['priority'].touched">
+          Priority is required
+        </div>
+      </div>
 
-    <button type="submit" [disabled]="loading">Submit</button>
-  </form>
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Submitting...' : 'Submit Ticket' }}
+      </button>
+    </form>
 
-  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
-  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </div>
 </div>

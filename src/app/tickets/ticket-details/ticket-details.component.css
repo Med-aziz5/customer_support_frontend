@@ -1,0 +1,126 @@
+.ticket-details-page {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.ticket-details-container {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Main Content */
+.ticket-main {
+  flex: 2 1 600px;
+}
+
+/* Sidebar Info */
+.ticket-info {
+  flex: 1 1 250px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  height: fit-content;
+}
+
+.ticket-info h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.ticket-info p {
+  margin: 0.5rem 0;
+}
+
+.status {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background-color: #fde68a; /* amber */
+  color: #92400e;
+  font-weight: 600;
+}
+
+/* Ticket Title & Description */
+.ticket-main h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.ticket-description {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+/* Section Cards */
+.comments-section, .notes-section, .history-section {
+  margin-bottom: 2rem;
+}
+
+.comment-card, .note-card, .history-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.comment-header, .note-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 0.3rem;
+  color: #6b7280;
+}
+
+.history-date, .note-date, .comment-date {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* Textareas */
+textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  margin-top: 0.5rem;
+  resize: vertical;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Buttons */
+button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .ticket-details-container {
+    flex-direction: column;
+  }
+
+  .ticket-info {
+    width: 100%;
+  }
+}

@@ -1,52 +1,70 @@
-<div *ngIf="loading">Loading ticket details...</div>
+<div class="ticket-details-page">
+  <div *ngIf="loading" class="loading">Loading ticket details...</div>
 
-<div *ngIf="!loading">
-  <h2>Ticket #{{ ticketId }}</h2>
+  <div *ngIf="!loading" class="ticket-details-container">
+    <!-- Main Content -->
+    <div class="ticket-main">
+      <h2>Ticket #{{ ticketId }} - {{ ticket?.title }}</h2>
+      <p class="ticket-description">{{ ticket?.description }}</p>
 
-  <!-- Comments Section -->
-  <section class="comments-section">
-    <h3>Comments</h3>
-    <div *ngFor="let c of comments" class="comment">
-      <p>
-        <strong>
-          {{ c.author?.email || 'Unknown' }} ({{ c.author?.role || 'N/A' }})
-        </strong>
-        : {{ c.content }}
-      </p>
-      <small>{{ c.created_at | date: 'short' }}</small>
+      <!-- Comments Section -->
+      <section class="comments-section">
+        <h3>Comments</h3>
+        <div *ngFor="let c of comments" class="comment-card">
+          <div class="comment-header">
+            <strong>{{ c.author?.email || 'Unknown' }} ({{ c.author?.role || 'N/A' }})</strong>
+            <span class="comment-date">{{ c.created_at | date:'short' }}</span>
+          </div>
+          <p>{{ c.content }}</p>
+        </div>
+
+        <!-- Add Comment -->
+        <div *ngIf="auth.getUser() as user" class="add-comment">
+          <textarea [formControl]="newComment" placeholder="Add a comment..."></textarea>
+          <button (click)="addComment()">Submit Comment</button>
+        </div>
+      </section>
+
+      <!-- Notes Section (Agent/Admin only) -->
+      <section *ngIf="role === 'AGENT' || role === 'ADMIN'" class="notes-section">
+        <h3>Internal Notes</h3>
+        <div *ngFor="let n of notes" class="note-card">
+          <div class="note-header">
+            <span>By {{ n.agent?.email || 'Unknown' }}</span>
+            <span class="note-date">{{ n.created_at | date:'short' }}</span>
+          </div>
+          <p>{{ n.content }}</p>
+        </div>
+
+        <!-- Add Note -->
+        <div class="add-note">
+          <textarea [formControl]="newNote" placeholder="Add a note..."></textarea>
+          <button (click)="addNote()">Submit Note</button>
+        </div>
+      </section>
+
+      <!-- History Section -->
+      <section class="history-section">
+        <h3>Ticket History</h3>
+        <div *ngFor="let h of history" class="history-card">
+          <p>
+            <strong>{{ h.user?.email || 'Unknown' }} ({{ h.user?.role || 'N/A' }})</strong> - {{ h.action }}
+          </p>
+          <span class="history-date">{{ h.created_at | date:'short' }}</span>
+        </div>
+      </section>
     </div>
 
-    <!-- Comment form (all logged-in users can comment) -->
-    <div *ngIf="auth.getUser() as user">
-      <textarea [formControl]="newComment" placeholder="Add a comment"></textarea>
-      <button (click)="addComment()">Submit Comment</button>
-    </div>
-  </section>
-
-  <!-- Notes Section (Agent/Admin only) -->
-  <section *ngIf="role === 'AGENT' || role === 'ADMIN'" class="notes-section">
-    <h3>Notes </h3>
-    <div *ngFor="let n of notes" class="note">
-      <p>{{ n.content }}</p>
-      <small>
-        - {{ n.agent?.email || 'Unknown' }}
-      </small>
-    </div>
-
-    <!-- Note form (only Agent/Admin) -->
-    <textarea [formControl]="newNote" placeholder="Add a note"></textarea>
-    <button (click)="addNote()">Submit Note</button>
-  </section>
-
-  <!-- History Section -->
-  <section class="history-section">
-    <h3>Ticket History</h3>
-    <div *ngFor="let h of history" class="history-entry">
-      <p>
-        {{ h.user?.email || 'Unknown' }} ({{ h.user?.role || 'N/A' }})
-        - {{ h.action }}
-      </p>
-      <small>{{ h.created_at | date: 'short' }}</small>
-    </div>
-  </section>
+    <!-- Sidebar: Ticket Info -->
+    <aside class="ticket-info">
+      <h3>Ticket Info</h3>
+      <p><strong>Category:</strong> {{ ticket?.category }}</p>
+      <p><strong>Priority:</strong> {{ ticket?.priority }}</p>
+      <p><strong>Status:</strong> <span class="status">{{ ticket?.status }}</span></p>
+      <p><strong>Assigned To:</strong> {{ ticket?.assigned_to || 'Unassigned' }}</p>
+      <p><strong>Created By:</strong> {{ ticket?.user?.email }}</p>
+      <p><strong>Created At:</strong> {{ ticket?.created_at | date:'short' }}</p>
+      <p *ngIf="ticket?.updated_at"><strong>Updated At:</strong> {{ ticket?.updated_at | date:'short' }}</p>
+    </aside>
+  </div>
 </div>

@@ -1,77 +1,152 @@
 /* CLIENT CARDS */
 .client-tickets {
+  padding: 2rem;
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.ticket-cards-wrapper {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
 .ticket-card {
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   padding: 1rem;
-  width: 250px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 300px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ticket-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .ticket-card h3 {
-  margin: 0 0 0.5rem 0;
+  margin-top: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .ticket-card p {
-  margin: 0.25rem 0;
+  margin: 0.3rem 0;
+}
+
+.ticket-card .status {
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.ticket-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.ticket-actions button {
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #3b82f6;
+  color: white;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.ticket-actions button:hover {
+  background-color: #2563eb;
 }
 
 /* AGENT / ADMIN TABLE */
 .agent-admin-tickets {
-  padding: 1rem;
+  padding: 2rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
 }
 
 .agent-admin-tickets table {
   width: 100%;
   border-collapse: collapse;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .agent-admin-tickets th,
 .agent-admin-tickets td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+  padding: 0.8rem 1rem;
   text-align: left;
 }
 
 .agent-admin-tickets th {
-  background-color: #f0f0f0;
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.agent-admin-tickets tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.agent-admin-tickets tbody tr:hover {
+  background-color: #eef2ff;
+}
+
+.status {
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background-color: #fef3c7;
+  color: #92400e;
 }
 
 /* Buttons */
 button {
-  margin-top: 0.3rem;
-  padding: 0.3rem 0.6rem;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.delete-btn {
+  background-color: #ef4444;
 }
 
-/* Admin assign input */
-.assign-admin {
-  display: flex;
-  gap: 0.3rem;
-  margin-top: 0.3rem;
+.delete-btn:hover {
+  background-color: #dc2626;
 }
 
-.assign-admin input {
-  width: 60px;
-  padding: 0.2rem;
+/* Filter bar */
+.filter-bar {
+  margin-bottom: 1rem;
 }
-.success-message {
-  color: green;
-  margin-bottom: 10px;
-  font-weight: bold;
+
+/* Loading and empty */
+.loading, .no-tickets {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ticket-cards-wrapper {
+    justify-content: center;
+  }
+  .ticket-card {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .agent-admin-tickets table,
+  .agent-admin-tickets th,
+  .agent-admin-tickets td {
+    font-size: 0.9rem;
+  }
 }

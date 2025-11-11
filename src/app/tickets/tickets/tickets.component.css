@@ -122,6 +122,21 @@ button {
   background-color: #dc2626;
 }
 
+.resolve-btn {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.resolve-btn:hover {
+  background-color: #059669;
+}
+
 /* Filter bar */
 .filter-bar {
   margin-bottom: 1rem;

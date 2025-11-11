@@ -1,7 +1,7 @@
 <!-- CLIENT VIEW -->
 <div *ngIf="role === 'CLIENT'" class="client-tickets">
   <div *ngIf="loading" class="loading">Loading tickets...</div>
-  <div *ngIf="!loading && tickets.length === 0" class="no-tickets">No tickets found.</div>
+  <div *ngIf="!loading && tickets.length === 0" class="no-tickets">No active tickets found.</div>
 
   <button routerLink="/tickets/create" class="create-ticket-btn">Create Ticket</button>
 
@@ -66,6 +66,7 @@
           <td>{{ ticket.assigned_to || 'Unassigned' }}</td>
           <td>
             <button *ngIf="!ticket.assigned_to" (click)="assignToSelf(ticket.id)">Assign to Self</button>
+
             <div *ngIf="role === 'ADMIN' && !ticket.assigned_to" class="assign-admin">
               <select [formControl]="assignForm.controls['agentId']">
                 <option value="">Select an agent</option>
@@ -75,8 +76,18 @@
               </select>
               <button (click)="assignToAgent(ticket.id)" [disabled]="!assignForm.value.agentId">Assign</button>
             </div>
+
             <button (click)="goToTicketDetails(ticket.id)">View Details</button>
+
+            <button
+              *ngIf="ticket.status !== 'RESOLVED'"
+              (click)="resolveTicket(ticket.id)"
+              class="resolve-btn"
+            >
+              Resolve
+            </button>
           </td>
+
           <td *ngIf="role === 'ADMIN'">
             <button class="delete-btn" (click)="deleteTicket(ticket.id)">Delete</button>
           </td>

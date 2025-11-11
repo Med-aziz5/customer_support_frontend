@@ -60,7 +60,13 @@ export class TicketsComponent implements OnInit {
       .get<{ data: Ticket[]; total_count: number }>(url)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: (res) => (this.tickets = res.data),
+        next: (res) => {
+          // For clients → hide resolved tickets
+          this.tickets =
+            this.role === 'CLIENT'
+              ? res.data.filter((t) => t.status !== 'RESOLVED')
+              : res.data;
+        },
         error: (err) => console.error('Error fetching tickets:', err),
       });
   }
@@ -148,6 +154,21 @@ export class TicketsComponent implements OnInit {
         this.requestedMeetings.add(ticketId);
       },
       error: (err) => alert(err.error?.message || 'Failed to request meeting'),
+    });
+  }
+
+  resolveTicket(ticketId: number) {
+    if (!confirm('Are you sure you want to mark this ticket as resolved?')) return;
+
+    this.http.patch(`/api/v1/tickets/${ticketId}/resolve`, {}).subscribe({
+      next: () => {
+        this.showMessage('Ticket marked as resolved successfully!');
+        this.fetchTickets();
+      },
+      error: (err) => {
+        console.error('Error resolving ticket:', err);
+        alert(err.error?.message || 'Failed to resolve ticket.');
+      },
     });
   }
 }

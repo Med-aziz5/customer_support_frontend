@@ -36,7 +36,7 @@ export class DashboardService {
   }
 
   getTotalTickets(): Observable<any> {
-    return this.http.get('/api/v1/tickets/stats/total-by-user/');
+    return this.http.get('/api/v1/tickets/stats/total/');
   }
 
   getBestRatedAgent(): Observable<any> {

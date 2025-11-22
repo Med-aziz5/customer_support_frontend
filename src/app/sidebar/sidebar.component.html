@@ -1,7 +1,7 @@
 <div *ngIf="user$ | async as user" class="sidebar">
   <div class="sidebar-header">
     <h3>Dashboard</h3>
-    <p>Welcome, {{ user.email }}</p>
+    <p>Welcome, {{ user.first_name }},{{ user.last_name}}</p>
     <span class="role">{{ user.role | titlecase }}</span>
   </div>
 

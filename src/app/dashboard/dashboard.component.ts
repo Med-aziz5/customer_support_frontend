@@ -13,15 +13,13 @@ import { finalize, take } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
   private dashboardService = inject(DashboardService);
-  public auth = inject(AuthService); // Now public for template access
+  public auth = inject(AuthService);
 
   role: 'CLIENT' | 'AGENT' | 'ADMIN' | null = null;
   loading = true;
   error: string | null = null;
 
   stats: any = {};
-
-  // Animated counters
   counters: Record<string, number> = {};
 
   ngOnInit() {
@@ -67,87 +65,78 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    const requests: any[] = [];
-
-    // CLIENT STATS
     if (this.role === 'CLIENT') {
-      requests.push(
-        this.dashboardService.getTotalTicketsByUser()
-          .pipe(finalize(() => this.loading = false))
-          .subscribe({
-            next: res => {
-              this.stats.totalTickets = res;
-              if (res?.count) this.animateCounter('totalTickets', res.count);
-            },
-            error: this.handleStatError('totalTickets')
-          })
-      );
+      this.dashboardService.getTotalTicketsByUser()
+        .pipe(finalize(() => this.loading = false))
+        .subscribe({
+          next: res => {
+            this.stats.totalTickets = res;
+            if (res?.count !== undefined) this.animateCounter('totalTickets', res.count);
+          },
+          error: this.handleStatError('totalTickets')
+        });
 
-      requests.push(
-        this.dashboardService.getMyAverageRating()
-          .pipe(finalize(() => this.loading = false))
-          .subscribe({
-            next: res => {
-              this.stats.myRating = res;
-              if (res?.average) this.animateCounter('myRating', res.average);
-            },
-            error: this.handleStatError('myRating')
-          })
-      );
+      this.dashboardService.getMyAverageRating()
+        .pipe(finalize(() => this.loading = false))
+        .subscribe({
+          next: res => {
+            this.stats.myRating = res;
+            if (res?.average !== undefined) this.animateCounter('myRating', res.average);
+          },
+          error: this.handleStatError('myRating')
+        });
     }
 
-    // AGENT STATS
     if (this.role === 'AGENT') {
-      requests.push(
-        this.dashboardService.getMySolvedTickets()
-          .pipe(finalize(() => this.loading = false))
-          .subscribe({
-            next: res => {
-              this.stats.mySolvedTickets = res;
-              if (res?.count) this.animateCounter('mySolvedTickets', res.count);
-            },
-            error: this.handleStatError('mySolvedTickets')
-          })
-      );
+      this.dashboardService.getMySolvedTickets()
+        .pipe(finalize(() => this.loading = false))
+        .subscribe({
+          next: res => {
+            this.stats.mySolvedTickets = res;
+            if (res?.count !== undefined) this.animateCounter('mySolvedTickets', res.count);
+          },
+          error: this.handleStatError('mySolvedTickets')
+        });
 
-      requests.push(
-        this.dashboardService.getTotalSolvedTickets()
-          .pipe(finalize(() => this.loading = false))
-          .subscribe({
-            next: res => {
-              this.stats.totalSolvedTickets = res;
-              if (res?.average) this.animateCounter('totalSolvedTickets', res.average);
-            },
-            error: this.handleStatError('totalSolvedTickets')
-          })
-      );
+      this.dashboardService.getTotalSolvedTickets()
+        .pipe(finalize(() => this.loading = false))
+        .subscribe({
+          next: res => {
+            this.stats.totalSolvedTickets = res;
+            if (res?.average !== undefined) this.animateCounter('totalSolvedTickets', res.average);
+          },
+          error: this.handleStatError('totalSolvedTickets')
+        });
     }
 
-    // ADMIN STATS
     if (this.role === 'ADMIN') {
+      this.loading = true;
       const adminStats = [
-        { key: 'totalTickets', method: this.dashboardService.getTotalTickets.bind(this.dashboardService) },
+        { key: 'totalTickets', method: this.dashboardService.getTotalTickets.bind(this.dashboardService), numericKey: 'total_tickets' },
         { key: 'bestAgent', method: this.dashboardService.getBestAgent.bind(this.dashboardService) },
         { key: 'worstAgent', method: this.dashboardService.getWorstAgent.bind(this.dashboardService) },
         { key: 'bestRatedAgent', method: this.dashboardService.getBestRatedAgent.bind(this.dashboardService) },
         { key: 'worstRatedAgent', method: this.dashboardService.getWorstRatedAgent.bind(this.dashboardService) }
       ];
 
+      let completedRequests = 0;
+
       adminStats.forEach(stat => {
-        requests.push(
-          stat.method()
-            .pipe(finalize(() => this.loading = false))
-            .subscribe({
-              next: res => {
-                this.stats[stat.key] = res || null;
-                if (res?.count || res?.average) this.animateCounter(stat.key, res.count || res.average);
-              },
-              error: this.handleStatError(stat.key)
-            })
-        );
+        stat.method()
+          .pipe(finalize(() => {
+            completedRequests++;
+            if (completedRequests === adminStats.length) this.loading = false;
+          }))
+          .subscribe({
+            next: res => {
+              this.stats[stat.key] = res || null;
+              if (stat.numericKey && res?.[stat.numericKey] !== undefined) {
+                this.animateCounter(stat.key, res[stat.numericKey]);
+              }
+            },
+            error: this.handleStatError(stat.key)
+          });
       });
     }
-
-    if (requests.length === 0) this.loading = false;
   }
 }

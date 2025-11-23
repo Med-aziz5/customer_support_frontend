@@ -5,17 +5,9 @@ import { RouterModule, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { AuthService, User } from '../../core/auth.service';
+import {Ticket } from './ticket.model'
 
-interface Ticket {
-  id: number;
-  title: string;
-  description: string;
-  priority: string;
-  status: string;
-  category: string;
-  assigned_to?: number;
-  user_id: number;
-}
+
 
 @Component({
   selector: 'app-tickets',
@@ -61,7 +53,6 @@ export class TicketsComponent implements OnInit {
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (res) => {
-          // For clients → hide resolved tickets
           this.tickets =
             this.role === 'CLIENT'
               ? res.data.filter((t) => t.status !== 'RESOLVED')
@@ -160,7 +151,7 @@ export class TicketsComponent implements OnInit {
   resolveTicket(ticketId: number) {
     if (!confirm('Are you sure you want to mark this ticket as resolved?')) return;
 
-    this.http.patch(`/api/v1/tickets/${ticketId}/resolve`, {}).subscribe({
+    this.http.put(`/api/v1/tickets/${ticketId}/resolve`, {}).subscribe({
       next: () => {
         this.showMessage('Ticket marked as resolved successfully!');
         this.fetchTickets();
@@ -171,4 +162,5 @@ export class TicketsComponent implements OnInit {
       },
     });
   }
+  
 }

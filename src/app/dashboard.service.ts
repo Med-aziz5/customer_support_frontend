@@ -19,7 +19,7 @@ export class DashboardService {
 
   // Agent
   getMySolvedTickets(): Observable<any> {
-    return this.http.get('/api/v1/tickets/stats/my-solved/');
+    return this.http.get('/api/v1/tickets/stats/total-solved/');
   }
 
   getTotalSolvedTickets(): Observable<any> {

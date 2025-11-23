@@ -1,1 +1,36 @@
-<p>notifications works!</p>
+<div class="notifications-page">
+
+  <div class="notifications-header">
+    <h2>Notifications</h2>
+    <button class="mark-all-btn" (click)="markAllAsRead()">Mark all as read</button>
+  </div>
+
+  <div class="notifications-list">
+    <div 
+      *ngFor="let n of notifications" 
+      class="notification-card" 
+      [ngClass]="{ 'unread': !n.read }"
+      (click)="markAsRead(n)"
+    >
+      <div class="notification-icon">
+        <span *ngIf="n.type === 'info'">ℹ️</span>
+        <span *ngIf="n.type === 'success'">✔️</span>
+        <span *ngIf="n.type === 'warning'">⚠️</span>
+        <span *ngIf="n.type === 'error'">⛔</span>
+      </div>
+
+      <div class="notification-content">
+        <h3>{{ n.title }}</h3>
+        <p>{{ n.message }}</p>
+        <div class="notification-time">{{ n.time }}</div>
+      </div>
+
+      <div *ngIf="!n.read" class="unread-dot"></div>
+    </div>
+  </div>
+
+  <p *ngIf="notifications.length === 0" class="no-notifications">
+    No notifications.
+  </p>
+
+</div>

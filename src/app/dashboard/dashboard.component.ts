@@ -65,49 +65,51 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    if (this.role === 'CLIENT') {
-      this.dashboardService.getTotalTicketsByUser()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: res => {
-            this.stats.totalTickets = res;
-            if (res?.count !== undefined) this.animateCounter('totalTickets', res.count);
-          },
-          error: this.handleStatError('totalTickets')
-        });
+if (this.role === 'CLIENT') {
+  this.dashboardService.getTotalTicketsByUser()
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
+      next: res => {
+        this.stats.totalTickets = res;
+        if (res?.total_tickets !== undefined) this.animateCounter('totalTickets', res.total_tickets);
+      },
+      error: this.handleStatError('totalTickets')
+    });
 
-      this.dashboardService.getMyAverageRating()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: res => {
-            this.stats.myRating = res;
-            if (res?.average !== undefined) this.animateCounter('myRating', res.average);
-          },
-          error: this.handleStatError('myRating')
-        });
-    }
+  this.dashboardService.getMyAverageRating()
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
+      next: res => {
+        this.stats.myRating = res;
+        if (res?.average !== undefined) this.animateCounter('myRating', res.average);
+      },
+      error: this.handleStatError('myRating')
+    });
+}
 
-    if (this.role === 'AGENT') {
-      this.dashboardService.getMySolvedTickets()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: res => {
-            this.stats.mySolvedTickets = res;
-            if (res?.count !== undefined) this.animateCounter('mySolvedTickets', res.count);
-          },
-          error: this.handleStatError('mySolvedTickets')
-        });
 
-      this.dashboardService.getTotalSolvedTickets()
-        .pipe(finalize(() => this.loading = false))
-        .subscribe({
-          next: res => {
-            this.stats.totalSolvedTickets = res;
-            if (res?.average !== undefined) this.animateCounter('totalSolvedTickets', res.average);
-          },
-          error: this.handleStatError('totalSolvedTickets')
-        });
-    }
+if (this.role === 'AGENT') {
+  this.dashboardService.getMySolvedTickets()
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
+      next: res => {
+        this.stats.mySolvedTickets = res;
+        if (res?.total_solved !== undefined) this.animateCounter('mySolvedTickets', res.total_solved);
+      },
+      error: this.handleStatError('mySolvedTickets')
+    });
+
+  this.dashboardService.getTotalSolvedTickets()
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
+      next: res => {
+        this.stats.totalSolvedTickets = res;
+        if (res?.average !== undefined) this.animateCounter('totalSolvedTickets', res.average);
+      },
+      error: this.handleStatError('totalSolvedTickets')
+    });
+}
+
 
     if (this.role === 'ADMIN') {
       this.loading = true;
